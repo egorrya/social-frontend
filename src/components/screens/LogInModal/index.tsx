@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { login } from '../../../state/login/asyncActions';
+import { login } from '../../../state/auth/asyncActions';
 import { setActiveModalId } from '../../../state/modal/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
 
@@ -28,7 +28,7 @@ const LogInFormSchema = yup
 
 const LogInModal: FC = (): React.ReactElement => {
   const dispatch = useAppDispatch();
-  const { error, status } = useSelector((state: RootState) => state.login);
+  const { error, status } = useSelector((state: RootState) => state.auth);
 
   const {
     register,
@@ -38,8 +38,9 @@ const LogInModal: FC = (): React.ReactElement => {
     resolver: yupResolver(LogInFormSchema),
   });
 
-  const onSubmit = (credentials: LogInFormProps) =>
+  const onSubmit = (credentials: LogInFormProps) => {
     dispatch(login(credentials));
+  };
 
   useEffect(() => {
     if (status === Status.LOADING) dispatch(setActiveModalId(''));

@@ -8,7 +8,7 @@ export const login = createAsyncThunk(
     try {
       const { data } = await AuthApi.logIn(credentials);
 
-      window.localStorage.setItem('token', data.token);
+      localStorage.setItem('token', data.token);
 
       return data;
     } catch (error: any) {
@@ -25,7 +25,7 @@ export const getMe = createAsyncThunk(
 
       return data;
     } catch (error: any) {
-      window.localStorage.setItem('token', '');
+      localStorage.setItem('token', '');
 
       return rejectWithValue(error.response.data.message);
     }

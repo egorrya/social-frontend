@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { getMe } from './../state/login/asyncActions';
+import { getMe } from '../state/auth/asyncActions';
+import { setStatusSuccess } from '../state/auth/slice';
 import { useAppDispatch } from './../state/store';
 
 export const useCheckAuth = () => {
@@ -8,7 +9,11 @@ export const useCheckAuth = () => {
   const checkAuth = () => {
     const token = localStorage.getItem('token');
 
-    if (token) dispatch(getMe());
+    if (token) {
+      dispatch(getMe());
+    } else {
+      dispatch(setStatusSuccess());
+    }
   };
 
   useEffect(() => {

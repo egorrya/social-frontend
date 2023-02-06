@@ -1,30 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Status } from '../../types/fetchStatus';
+
 import { getAllPosts } from './asyncActions';
-
-interface Post {
-  _id: string;
-  text: string;
-}
-
-interface PostsState {
-  posts: Post[] | [];
-  status: Status;
-  error: unknown;
-  lastPage: number | null;
-}
+import { PostsState } from './types';
 
 const initialState: PostsState = {
   posts: [],
-  status: Status.NEVER,
   error: null,
   lastPage: null,
+  status: Status.LOADING,
 };
 
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    clearPosts: (state) => {
+      state.posts = [];
+      state.error = null;
+      state.lastPage = null;
+      state.status = Status.NEVER;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllPosts.pending, (state) => {
@@ -44,5 +41,5 @@ const postsSlice = createSlice({
   },
 });
 
-// export const { incrementPage } = postsSlice.actions;
+export const { clearPosts } = postsSlice.actions;
 export default postsSlice.reducer;
