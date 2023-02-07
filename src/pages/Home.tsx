@@ -7,10 +7,10 @@ import PageLayout from '../components/layouts/PageLayout';
 import CreatePost from '../components/screens/CreatePost';
 import Posts from '../components/screens/Posts';
 
-// todo: create post logic
-// todo: add a post comment logic
-// todo: add a post delete logic
 // todo: add a post edit logic
+// todo: add single post page
+// todo: add comments on single post page
+// todo: add a comment delete logic
 // todo: add my profile page
 
 const Home: FC = () => {

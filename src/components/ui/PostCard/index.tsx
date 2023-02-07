@@ -1,7 +1,8 @@
-import { FC, useState } from 'react';
+import { FC, memo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { PostsApi } from '../../../services/api/PostsApi';
-import { RootState } from '../../../state/store';
+import { deletePost } from '../../../state/posts/slice';
+import { RootState, useAppDispatch } from '../../../state/store';
 import { Status } from '../../../types/fetchStatus';
 
 import LikeButton from '../LikeButton';
@@ -21,6 +22,8 @@ const PostCard: FC<PostCardProps> = ({
   postComments,
   isLiked: liked,
 }) => {
+  const dispatch = useAppDispatch();
+
   const { loggedIn } = useSelector((state: RootState) => state.auth);
 
   const [likesCount, setLikesCount] = useState(likes);
@@ -41,6 +44,16 @@ const PostCard: FC<PostCardProps> = ({
       });
   };
 
+  const handleDelete = () => {
+    // todo: add confirmation
+    PostsApi.deletePost(postId).then(() => {
+      dispatch(deletePost(postId));
+    });
+    // todo: add success notification
+
+    // todo: add error notification
+  };
+
   return (
     <div>
       <h3>{text}</h3>
@@ -49,14 +62,17 @@ const PostCard: FC<PostCardProps> = ({
       <div>{postComments.length} comments</div>
 
       {loggedIn && (
-        <LikeButton
-          likeStatus={likeStatus}
-          isLiked={isLiked}
-          handleLike={handleLike}
-        />
+        <>
+          <LikeButton
+            likeStatus={likeStatus}
+            isLiked={isLiked}
+            handleLike={handleLike}
+          />
+          <button onClick={handleDelete}>Delete</button>
+        </>
       )}
     </div>
   );
 };
 
-export default PostCard;
+export default memo(PostCard);

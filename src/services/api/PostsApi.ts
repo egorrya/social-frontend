@@ -18,6 +18,12 @@ export const PostsApi = {
     return data;
   },
 
+  async deletePost(postId: string) {
+    const { data } = await axios.delete(`/posts/${postId}`);
+
+    return data;
+  },
+
   async toggleLike(postId: string) {
     const { data } = await axios.post(`/posts/${postId}/toggle-like`);
 

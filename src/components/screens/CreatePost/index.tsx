@@ -56,11 +56,17 @@ const CreatePost: FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <textarea placeholder="What's on your mind?" {...register('text')} />
-      {errors.text?.message}
-      <button type='submit'>Post</button>
-    </form>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <textarea placeholder="What's on your mind?" {...register('text')} />
+        {errors.text?.message}
+        <button type='submit'>Post</button>
+      </form>
+
+      {status === Status.ERROR && <div>{error as string}</div>}
+
+      {status === Status.LOADING && <div>Loading...</div>}
+    </>
   );
 };
 
