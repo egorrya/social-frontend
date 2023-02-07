@@ -12,9 +12,12 @@ export const modalSlice = createSlice({
     setActiveModalId: (state, action: PayloadAction<string>) => {
       state.activeModalId = action.payload;
     },
+    disableModal: (state) => {
+      state.activeModalId = '';
+    },
   },
 });
 
-export const { setActiveModalId } = modalSlice.actions;
+export const { setActiveModalId, disableModal } = modalSlice.actions;
 
 export default modalSlice.reducer;

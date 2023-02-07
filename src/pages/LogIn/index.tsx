@@ -1,5 +1,5 @@
 import LogInModal from '../../components/screens/LogInModal';
-import SignInModal from '../../components/screens/SignInModal';
+import SignInModal from '../../components/screens/RegisterModal';
 
 const LogIn = () => {
   return (

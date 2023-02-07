@@ -1,23 +1,21 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { getMe } from '../state/auth/asyncActions';
-import { setStatusSuccess } from '../state/auth/slice';
 import { useAppDispatch } from './../state/store';
 
 export const useCheckAuth = () => {
   const dispatch = useAppDispatch();
 
-  const checkAuth = () => {
+  const checkAuth = useCallback(() => {
     const token = localStorage.getItem('token');
 
-    if (token) {
+    if (token && token !== 'undefined') {
       dispatch(getMe());
     } else {
-      dispatch(setStatusSuccess());
+      localStorage.removeItem('token');
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     checkAuth();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [checkAuth]);
 };

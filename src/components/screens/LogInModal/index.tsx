@@ -1,8 +1,8 @@
 import React, { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { login } from '../../../state/auth/asyncActions';
-import { setActiveModalId } from '../../../state/modal/slice';
+import { auth } from '../../../state/auth/asyncActions';
+import { disableModal } from '../../../state/modal/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
 
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -21,7 +21,7 @@ const LogInFormSchema = yup
       .required('Email is required'),
     password: yup
       .string()
-      .min(6, 'Password should be longer')
+      .min(6, 'Password must be at least 6 characters long')
       .required('Password is required'),
   })
   .required();
@@ -39,15 +39,14 @@ const LogInModal: FC = (): React.ReactElement => {
   });
 
   const onSubmit = (credentials: LogInFormProps) => {
-    dispatch(login(credentials));
+    dispatch(auth({ type: 'login', credentials }));
   };
 
   useEffect(() => {
-    if (status === Status.LOADING) dispatch(setActiveModalId(''));
+    if (status === Status.SUCCESS) dispatch(disableModal());
     // todo - add error notification
     if (status === Status.ERROR) console.log(error);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  }, [dispatch, error, status]);
 
   return (
     <Modal title='Log In' id='login'>

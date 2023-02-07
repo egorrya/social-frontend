@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { setActiveModalId } from '../../../state/modal/slice';
+import { disableModal, setActiveModalId } from '../../../state/modal/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
 
 interface ModalProps {
@@ -16,7 +16,7 @@ const Modal: FC<ModalProps> = ({ title, children, id }) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => {
-    dispatch(setActiveModalId(''));
+    dispatch(disableModal());
 
     setShowModal(false);
   };

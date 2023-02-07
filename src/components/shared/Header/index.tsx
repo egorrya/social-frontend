@@ -4,7 +4,7 @@ import { logOut } from '../../../state/auth/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
 import { Status } from '../../../types/fetchStatus';
 import LogInModal from '../../screens/LogInModal';
-import SignInModal from '../../screens/SignInModal';
+import SignInModal from '../../screens/RegisterModal';
 
 const Header: FC = () => {
   const dispatch = useAppDispatch();
@@ -21,8 +21,6 @@ const Header: FC = () => {
   const authSectionButtons = () => {
     if (status === Status.LOADING) return <div>Loading...</div>;
 
-    if (status === Status.ERROR) return <div>Error</div>;
-
     if (loggedIn)
       return (
         <>
@@ -36,6 +34,7 @@ const Header: FC = () => {
         <>
           <LogInModal />
           <SignInModal />
+          {status === Status.ERROR && <div>Error</div>}
         </>
       );
   };

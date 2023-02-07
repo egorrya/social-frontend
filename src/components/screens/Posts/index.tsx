@@ -7,7 +7,7 @@ import { getAllPosts } from '../../../state/posts/asyncActions';
 import { clearPosts } from '../../../state/posts/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
 
-import { useInfiniteLoad } from '../../../hooks/useInfiniteLoad';
+import { useInfiniteScroll } from '../../../hooks/useInfiniteScroll';
 import { scrollToTop } from '../../../utils/scrollToTop';
 
 import PostCard from '../../ui/PostCard';
@@ -21,30 +21,23 @@ const Posts = () => {
   const { loggedInWithSubmit } = useSelector((state: RootState) => state.auth);
 
   const { page, setPage, hasMore, setHasMore, setObserverTarget } =
-    useInfiniteLoad();
+    useInfiniteScroll(500);
 
-  // get posts on page change
+  useEffect(() => {
+    dispatch(getAllPosts({ page }));
+  }, [dispatch, page]);
+
   useEffect(() => {
     if (lastPage && page === lastPage) setHasMore(false);
+  }, [page, lastPage, setHasMore]);
 
-    dispatch(getAllPosts({ page }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
-
-  // reset page to 1 and clear posts when user logs in
   useEffect(() => {
     if (loggedInWithSubmit) {
       dispatch(clearPosts());
-
       scrollToTop();
-
       if (lastPage && lastPage > 1) setHasMore(true);
-
-      if (page > 1) {
-        setPage(1);
-      } else if (page === 1) {
-        dispatch(getAllPosts({ page }));
-      }
+      if (page > 1) setPage(1);
+      if (page === 1) dispatch(getAllPosts({ page }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInWithSubmit]);
@@ -63,7 +56,7 @@ const Posts = () => {
       ))}
 
       {hasMore && status === Status.SUCCESS && (
-        <div ref={setObserverTarget}>load more</div>
+        <div ref={setObserverTarget}></div>
       )}
 
       {status === Status.SUCCESS && !hasMore && <div>No more posts</div>}

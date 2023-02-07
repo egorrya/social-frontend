@@ -1,18 +1,19 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { LogInFormProps } from '../../components/screens/LogInModal/types';
-import { AuthApi } from '../../services/api/AuthApi';
+import { AuthApi, AuthFormProps } from '../../services/api/AuthApi';
 
-export const login = createAsyncThunk(
-  'auth/login',
-  async (credentials: LogInFormProps, { rejectWithValue }) => {
+export const auth = createAsyncThunk(
+  'auth',
+  async ({ type, credentials }: AuthFormProps, { rejectWithValue }) => {
     try {
-      const { data } = await AuthApi.logIn(credentials);
+      const { data } = await AuthApi.auth({ type, credentials });
 
       localStorage.setItem('token', data.token);
 
-      return data;
+      return { ...data, type };
     } catch (error: any) {
-      return rejectWithValue(error.response.data.message);
+      const message = error.response.data.message ?? error.response.data[0].msg;
+
+      return rejectWithValue(message);
     }
   }
 );
@@ -25,7 +26,7 @@ export const getMe = createAsyncThunk(
 
       return data;
     } catch (error: any) {
-      localStorage.setItem('token', '');
+      localStorage.removeItem('token');
 
       return rejectWithValue(error.response.data.message);
     }

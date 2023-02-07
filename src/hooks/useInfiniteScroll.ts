@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 /**
- * useInfiniteLoad hook for managing infinite scrolling
+ * useInfiniteScroll hook for managing infinite scrolling
  *
  * @returns {Object} - an object with the following properties:
  *   - page: the current page number
@@ -12,11 +12,11 @@ import { useEffect, useRef, useState } from 'react';
  *
  * Example Usage:
  *
- * const { page, setPage, hasMore, setHasMore, observerTarget, setObserverTarget } = useInfiniteLoad();
+ * const { page, setPage, hasMore, setHasMore, observerTarget, setObserverTarget } = useInfiniteScroll();
  *
  */
 
-export const useInfiniteLoad = () => {
+export const useInfiniteScroll = (offset: number = 300) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
@@ -30,12 +30,18 @@ export const useInfiniteLoad = () => {
   };
 
   useEffect(() => {
-    observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        loadMore();
+    observer.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore();
+        }
+      },
+      {
+        rootMargin: `0px 0px ${offset}px 0px`,
+        threshold: 0,
       }
-    });
-  }, []);
+    );
+  }, [offset]);
 
   useEffect(() => {
     if (observerTarget) {
