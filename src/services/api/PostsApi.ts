@@ -12,6 +12,12 @@ export const PostsApi = {
     return data;
   },
 
+  async createPost(text: string) {
+    const { data } = await axios.post('/posts', { text });
+
+    return data;
+  },
+
   async toggleLike(postId: string) {
     const { data } = await axios.post(`/posts/${postId}/toggle-like`);
 

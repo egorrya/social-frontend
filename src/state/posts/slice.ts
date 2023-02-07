@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Post } from '../../components/ui/PostCard/types';
 import { Status } from '../../types/fetchStatus';
 
 import { getAllPosts } from './asyncActions';
@@ -21,6 +22,9 @@ const postsSlice = createSlice({
       state.lastPage = null;
       state.status = Status.NEVER;
     },
+    addNewPost: (state, action: PayloadAction<Post>) => {
+      state.posts = [action.payload, ...state.posts];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -41,5 +45,5 @@ const postsSlice = createSlice({
   },
 });
 
-export const { clearPosts } = postsSlice.actions;
+export const { clearPosts, addNewPost } = postsSlice.actions;
 export default postsSlice.reducer;

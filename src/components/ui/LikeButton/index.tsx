@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { FC } from 'react';
 import { Status } from '../../../types/fetchStatus';
 
 interface LikeButtonProps {
@@ -22,4 +22,4 @@ const LikeButton: FC<LikeButtonProps> = ({
   return <button onClick={handleLike}>{isLiked ? 'Unlike' : 'Like'}</button>;
 };
 
-export default memo(LikeButton);
+export default LikeButton;
