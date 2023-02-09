@@ -1,8 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { useCheckAuth } from './hooks/useCheckAuth';
 
-import Home from './pages/Home';
-import LogIn from './pages/LogIn';
+import { Home, Login, NotFound, Post, Profile } from './pages';
 
 function App() {
   useCheckAuth();
@@ -10,8 +9,11 @@ function App() {
   return (
     <div className='App'>
       <Routes>
-        <Route path='/login' element={<LogIn />} />
         <Route path='/' element={<Home />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='post/:id' element={<Post />} />
+        <Route path='profile/:id' element={<Profile />} />
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </div>
   );

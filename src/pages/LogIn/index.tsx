@@ -1,7 +1,7 @@
 import LogInModal from '../../components/screens/LogInModal';
 import SignInModal from '../../components/screens/RegisterModal';
 
-const LogIn = () => {
+const Login = () => {
   return (
     <>
       <LogInModal />
@@ -10,4 +10,4 @@ const LogIn = () => {
   );
 };
 
-export default LogIn;
+export default Login;
