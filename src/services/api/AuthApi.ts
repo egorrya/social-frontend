@@ -3,13 +3,13 @@ import { RegisterFormProps } from '../../components/screens/RegisterModal/types'
 
 import axios from '../axios';
 
-export interface AuthFormProps {
+export interface AuthFormCredentials {
   type: 'register' | 'login';
   credentials: LogInFormProps | RegisterFormProps;
 }
 
 export const AuthApi = {
-  async auth({ type, credentials }: AuthFormProps) {
+  async auth({ type, credentials }: AuthFormCredentials) {
     const { data } = await axios.post(`/auth/${type}`, credentials);
 
     return data;
