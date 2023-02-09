@@ -8,7 +8,7 @@ import * as yup from 'yup';
 
 import { useSelector } from 'react-redux';
 import { PostsApi } from '../../../services/api/PostsApi';
-import { changeEditableId } from '../../../state/postEdit/slice';
+import { changeEditableId } from '../../../state/posts/postEditSlice';
 import { addNewPost, editPost } from '../../../state/posts/slice';
 import { Status } from '../../../types/fetchStatus';
 

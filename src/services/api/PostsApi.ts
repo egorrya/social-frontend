@@ -12,6 +12,12 @@ export const PostsApi = {
     return data;
   },
 
+  async getPost(postId: string) {
+    const { data } = await axios.get(`/posts/${postId}`);
+
+    return data;
+  },
+
   async createPost(text: string) {
     const { data } = await axios.post('/posts', { text });
 

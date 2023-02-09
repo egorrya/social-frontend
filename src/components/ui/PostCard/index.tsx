@@ -1,7 +1,7 @@
 import { FC, memo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { PostsApi } from '../../../services/api/PostsApi';
-import { changeEditableId } from '../../../state/postEdit/slice';
+import { changeEditableId } from '../../../state/posts/postEditSlice';
 import { deletePost } from '../../../state/posts/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
 import { Status } from '../../../types/fetchStatus';

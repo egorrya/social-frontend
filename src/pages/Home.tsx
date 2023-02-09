@@ -7,7 +7,6 @@ import PageLayout from '../components/layouts/PageLayout';
 import Posts from '../components/screens/Posts';
 import PostForm from '../components/ui/PostForm';
 
-// todo: add single post page
 // todo: add comments on single post page
 // todo: add a comment delete logic
 // todo: add my profile page
