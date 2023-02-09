@@ -5,4 +5,5 @@ export interface Post {
   post_comments: any[];
   isLiked: boolean;
   likesCount: number;
+  isOwnPost: boolean;
 }

@@ -3,11 +3,13 @@ import { useDispatch } from 'react-redux';
 
 import auth from './auth/slice';
 import modal from './modal/slice';
+
 import postCreation from './postCreation/slice';
+import postEdit from './postEdit/slice';
 import posts from './posts/slice';
 
 export const store = configureStore({
-  reducer: { modal, auth, posts, postCreation },
+  reducer: { modal, auth, posts, postCreation, postEdit },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

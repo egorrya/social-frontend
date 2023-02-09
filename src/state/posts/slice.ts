@@ -23,7 +23,15 @@ const postsSlice = createSlice({
       state.status = Status.NEVER;
     },
     addNewPost: (state, action: PayloadAction<Post>) => {
-      state.posts = [action.payload, ...state.posts];
+      state.posts = [{ ...action.payload, isOwnPost: true }, ...state.posts];
+    },
+    editPost: (state, action: PayloadAction<Post>) => {
+      state.posts = state.posts.map((post) => {
+        if (post._id === action.payload._id) {
+          return { ...action.payload, isOwnPost: true };
+        }
+        return post;
+      });
     },
     deletePost: (state, action: PayloadAction<string>) => {
       state.posts = state.posts.filter((post) => post._id !== action.payload);
@@ -48,5 +56,6 @@ const postsSlice = createSlice({
   },
 });
 
-export const { clearPosts, addNewPost, deletePost } = postsSlice.actions;
+export const { clearPosts, addNewPost, editPost, deletePost } =
+  postsSlice.actions;
 export default postsSlice.reducer;

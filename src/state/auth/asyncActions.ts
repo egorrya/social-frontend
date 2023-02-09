@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AuthApi, AuthFormProps } from '../../services/api/AuthApi';
+import { AuthApi, AuthFormCredentials } from '../../services/api/AuthApi';
 
 export const auth = createAsyncThunk(
   'auth',
-  async ({ type, credentials }: AuthFormProps, { rejectWithValue }) => {
+  async ({ type, credentials }: AuthFormCredentials, { rejectWithValue }) => {
     try {
       const { data } = await AuthApi.auth({ type, credentials });
 

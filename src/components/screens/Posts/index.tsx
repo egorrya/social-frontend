@@ -52,6 +52,7 @@ const Posts = () => {
           likesCount={post.likesCount}
           postComments={post.post_comments}
           isLiked={post.isLiked}
+          isOwnPost={post.isOwnPost}
         />
       ))}
 

@@ -18,6 +18,12 @@ export const PostsApi = {
     return data;
   },
 
+  async editPost(text: string, postId: string) {
+    const { data } = await axios.patch(`/posts/${postId}`, { text });
+
+    return data;
+  },
+
   async deletePost(postId: string) {
     const { data } = await axios.delete(`/posts/${postId}`);
 
