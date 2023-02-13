@@ -19,7 +19,7 @@ const SinglePost: FC<SinglePostProps> = ({ postId }) => {
   );
 
   useEffect(() => {
-    if (postId) dispatch(getPost(postId));
+    if (postId) dispatch(getPost(postId)).catch(() => {});
   }, [dispatch, postId]);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const SinglePost: FC<SinglePostProps> = ({ postId }) => {
           text={post.text}
           postId={post._id}
           likesCount={post.likesCount}
-          postComments={post.post_comments}
+          commentsCount={post.commentsCount}
           isLiked={post.isLiked}
           isOwnPost={post.isOwnPost}
         />

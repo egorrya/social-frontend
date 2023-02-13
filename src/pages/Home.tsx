@@ -7,13 +7,6 @@ import PageLayout from '../components/layouts/PageLayout';
 import Posts from '../components/screens/Posts';
 import PostForm from '../components/ui/PostForm';
 
-// todo: add comments on single post page
-// todo: add a comment delete logic
-// todo: add my profile page
-// todo: add following and followers pages
-// todo: add a follow/unfollow logic
-// todo: not found page
-
 const Home: FC = () => {
   const { loggedIn } = useSelector((state: RootState) => state.auth);
 

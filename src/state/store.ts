@@ -9,8 +9,10 @@ import postEdit from './posts/postEditSlice';
 import singlePost from './posts/singlePostSlice';
 import posts from './posts/slice';
 
+import comments from './comments/slice';
+
 export const store = configureStore({
-  reducer: { modal, auth, posts, postCreation, postEdit, singlePost },
+  reducer: { modal, auth, posts, postCreation, postEdit, singlePost, comments },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

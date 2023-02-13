@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { logOut } from '../../../state/auth/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
 import { Status } from '../../../types/fetchStatus';
@@ -41,7 +42,7 @@ const Header: FC = () => {
 
   return (
     <header>
-      <div>That's not a twitter</div>
+      <Link to={'/'}>Nottwitter</Link>
       <nav></nav>
       <div>{authSectionButtons()}</div>
     </header>

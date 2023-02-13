@@ -12,28 +12,33 @@ import { useEffect, useRef, useState } from 'react';
  *
  * Example Usage:
  *
- * const { page, setPage, hasMore, setHasMore, observerTarget, setObserverTarget } = useInfiniteScroll();
+ * const { page, setPage, hasMore, setHasMore, observerTarget, setObserverTarget } = useInfiniteScroll(currentPage, lastPage, 100);
  *
  */
 
-export const useInfiniteScroll = (offset: number = 300) => {
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+export const useInfiniteScroll = (
+  currentPage: number = 1,
+  lastPage: number | null,
+  offset: number = 300
+) => {
+  const [page, setPage] = useState(currentPage);
+
+  const [hasMore, setHasMore] = useState(() => {
+    if (!lastPage || page < lastPage) return true;
+    if (lastPage && page >= lastPage) return false;
+    if (page < 1) return false;
+  });
 
   const observer = useRef<IntersectionObserver | null>(null);
   const [observerTarget, setObserverTarget] = useState<null | HTMLDivElement>(
     null
   );
 
-  const loadMore = () => {
-    setPage((prev) => prev + 1);
-  };
-
   useEffect(() => {
     observer.current = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          loadMore();
+          setPage((prev) => prev + 1);
         }
       },
       {
@@ -52,6 +57,10 @@ export const useInfiniteScroll = (offset: number = 300) => {
       observer.current?.disconnect();
     };
   }, [observerTarget]);
+
+  useEffect(() => {
+    if (lastPage && page >= lastPage) setHasMore(false);
+  }, [page, lastPage, setHasMore]);
 
   return {
     page,

@@ -1,6 +1,6 @@
 import { Status } from '../../../types/fetchStatus';
 
-import { useEffect } from 'react';
+import { LegacyRef, useEffect } from 'react';
 
 import { useSelector } from 'react-redux';
 import { getAllPosts } from '../../../state/posts/asyncActions';
@@ -15,21 +15,17 @@ import PostCard from '../../ui/PostCard';
 const Posts = () => {
   const dispatch = useAppDispatch();
 
-  const { posts, status, lastPage } = useSelector(
+  const { posts, status, lastPage, currentPage } = useSelector(
     (state: RootState) => state.posts
   );
   const { loggedInWithSubmit } = useSelector((state: RootState) => state.auth);
 
   const { page, setPage, hasMore, setHasMore, setObserverTarget } =
-    useInfiniteScroll(500);
+    useInfiniteScroll(currentPage, lastPage, 500);
 
   useEffect(() => {
-    dispatch(getAllPosts({ page }));
-  }, [dispatch, page]);
-
-  useEffect(() => {
-    if (lastPage && page === lastPage) setHasMore(false);
-  }, [page, lastPage, setHasMore]);
+    if (hasMore) dispatch(getAllPosts({ page }));
+  }, [dispatch, page, hasMore]);
 
   useEffect(() => {
     if (loggedInWithSubmit) {
@@ -50,17 +46,20 @@ const Posts = () => {
           text={post.text}
           postId={post._id}
           likesCount={post.likesCount}
-          postComments={post.post_comments}
+          commentsCount={post.commentsCount}
           isLiked={post.isLiked}
           isOwnPost={post.isOwnPost}
+          isSinglePostPage={false}
         />
       ))}
 
       {hasMore && status === Status.SUCCESS && (
-        <div ref={setObserverTarget}></div>
+        <div ref={setObserverTarget as LegacyRef<HTMLDivElement>}></div>
       )}
 
-      {status === Status.SUCCESS && !hasMore && <div>No more posts</div>}
+      {status === Status.SUCCESS && !hasMore && (
+        <div>No {posts.length > 0 && 'more'} posts</div>
+      )}
 
       {status === Status.LOADING && <div>Loading...</div>}
 
