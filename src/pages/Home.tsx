@@ -8,14 +8,14 @@ import Posts from '../components/screens/Posts';
 import PostForm from '../components/ui/PostForm';
 
 const Home: FC = () => {
-  const { loggedIn } = useSelector((state: RootState) => state.auth);
+	const { loggedIn } = useSelector((state: RootState) => state.auth);
 
-  return (
-    <PageLayout>
-      {loggedIn && <PostForm type='create' />}
-      <Posts />
-    </PageLayout>
-  );
+	return (
+		<PageLayout>
+			{loggedIn && <PostForm type='create' />}
+			<Posts filter='all' />
+		</PageLayout>
+	);
 };
 
 export default Home;

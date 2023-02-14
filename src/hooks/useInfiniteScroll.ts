@@ -17,57 +17,61 @@ import { useEffect, useRef, useState } from 'react';
  */
 
 export const useInfiniteScroll = (
-  currentPage: number = 1,
-  lastPage: number | null,
-  offset: number = 300
+	currentPage: number = 1,
+	lastPage: number | null,
+	offset: number = 300
 ) => {
-  const [page, setPage] = useState(currentPage);
+	const [page, setPage] = useState(currentPage);
 
-  const [hasMore, setHasMore] = useState(() => {
-    if (!lastPage || page < lastPage) return true;
-    if (lastPage && page >= lastPage) return false;
-    if (page < 1) return false;
-  });
+	const [hasMore, setHasMore] = useState(() => {
+		if (!lastPage || page < lastPage) return true;
+		if (lastPage && page >= lastPage) return false;
+		if (page < 1) return false;
+	});
 
-  const observer = useRef<IntersectionObserver | null>(null);
-  const [observerTarget, setObserverTarget] = useState<null | HTMLDivElement>(
-    null
-  );
+	const observer = useRef<IntersectionObserver | null>(null);
+	const [observerTarget, setObserverTarget] = useState<null | HTMLDivElement>(
+		null
+	);
 
-  useEffect(() => {
-    observer.current = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      {
-        rootMargin: `0px 0px ${offset}px 0px`,
-        threshold: 0,
-      }
-    );
-  }, [offset]);
+	useEffect(() => {
+		observer.current = new IntersectionObserver(
+			entries => {
+				if (entries[0].isIntersecting) {
+					setPage(prev => prev + 1);
+				}
+			},
+			{
+				rootMargin: `0px 0px ${offset}px 0px`,
+				threshold: 0,
+			}
+		);
+	}, [offset]);
 
-  useEffect(() => {
-    if (observerTarget) {
-      observer.current?.observe(observerTarget);
-    }
+	useEffect(() => {
+		if (observerTarget) {
+			observer.current?.observe(observerTarget);
+		}
 
-    return () => {
-      observer.current?.disconnect();
-    };
-  }, [observerTarget]);
+		return () => {
+			observer.current?.disconnect();
+		};
+	}, [observerTarget]);
 
-  useEffect(() => {
-    if (lastPage && page >= lastPage) setHasMore(false);
-  }, [page, lastPage, setHasMore]);
+	useEffect(() => {
+		if (lastPage && page >= lastPage) {
+			setHasMore(false);
+		} else {
+			setHasMore(true);
+		}
+	}, [page, lastPage, setHasMore]);
 
-  return {
-    page,
-    setPage,
-    hasMore,
-    setHasMore,
-    observerTarget,
-    setObserverTarget,
-  };
+	return {
+		page,
+		setPage,
+		hasMore,
+		setHasMore,
+		observerTarget,
+		setObserverTarget,
+	};
 };

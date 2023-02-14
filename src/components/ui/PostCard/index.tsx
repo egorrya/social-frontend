@@ -9,19 +9,13 @@ import { Status } from '../../../types/fetchStatus';
 
 import LikeButton from '../LikeButton';
 import PostForm from '../PostForm';
-
-interface PostCardProps {
-	postId: string;
-	text: string;
-	likesCount: number;
-	commentsCount: number;
-	isLiked: boolean;
-	isOwnPost: boolean;
-	isSinglePostPage?: boolean;
-}
+import { PostCardProps } from './types';
 
 const PostCard: FC<PostCardProps> = ({
 	postId,
+
+	username,
+	createdAt,
 	text,
 	likesCount: likes,
 	commentsCount,
@@ -43,7 +37,7 @@ const PostCard: FC<PostCardProps> = ({
 		await setLikeStatus(Status.LOADING);
 
 		await PostsApi.toggleLike(postId)
-			.then(data => {
+			.then(async data => {
 				setLikeStatus(Status.SUCCESS);
 				setLikesCount(data.likesCount);
 				setIsLiked(data.isLiked);
@@ -92,6 +86,11 @@ const PostCard: FC<PostCardProps> = ({
 
 	return (
 		<div>
+			<Link to={`/${username}`}>
+				<div>{username}</div>
+				<div>{createdAt}</div>
+			</Link>
+
 			{!isSinglePostPage ? (
 				<Link to={`/posts/${postId}`}>{content()}</Link>
 			) : (

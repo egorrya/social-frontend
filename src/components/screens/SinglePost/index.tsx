@@ -6,45 +6,43 @@ import { Status } from '../../../types/fetchStatus';
 import PostCard from '../../ui/PostCard';
 
 interface SinglePostProps {
-  postId: string | undefined;
+	postId: string | undefined;
 }
 
 const SinglePost: FC<SinglePostProps> = ({ postId }) => {
-  const dispatch = useAppDispatch();
+	const dispatch = useAppDispatch();
 
-  const { loggedInWithSubmit } = useSelector((state: RootState) => state.auth);
+	const { loggedInWithSubmit } = useSelector((state: RootState) => state.auth);
 
-  const { post, status, error } = useSelector(
-    (state: RootState) => state.singlePost
-  );
+	const { post, status, error } = useSelector(
+		(state: RootState) => state.singlePost
+	);
 
-  useEffect(() => {
-    if (postId) dispatch(getPost(postId)).catch(() => {});
-  }, [dispatch, postId]);
+	useEffect(() => {
+		if (postId) dispatch(getPost(postId));
+	}, [dispatch, postId]);
 
-  useEffect(() => {
-    if (loggedInWithSubmit && postId) dispatch(getPost(postId));
-  }, [dispatch, loggedInWithSubmit, postId]);
+	useEffect(() => {
+		if (loggedInWithSubmit && postId) dispatch(getPost(postId));
+	}, [dispatch, loggedInWithSubmit, postId]);
 
-  if (status === Status.LOADING) return <div>Loading...</div>;
+	if (status === Status.LOADING) return <div>Loading...</div>;
 
-  if (status === Status.ERROR) return <div>{error as string}</div>;
+	if (status === Status.ERROR) return <div>{error as string}</div>;
 
-  return (
-    <>
-      {post && status === Status.SUCCESS && (
-        <PostCard
-          key={post._id}
-          text={post.text}
-          postId={post._id}
-          likesCount={post.likesCount}
-          commentsCount={post.commentsCount}
-          isLiked={post.isLiked}
-          isOwnPost={post.isOwnPost}
-        />
-      )}
-    </>
-  );
+	return (
+		<>
+			{post && status === Status.SUCCESS && (
+				<PostCard
+					key={post._id}
+					postId={post._id}
+					username={post.user.username}
+					{...post}
+					isSinglePostPage={false}
+				/>
+			)}
+		</>
+	);
 };
 
 export default SinglePost;

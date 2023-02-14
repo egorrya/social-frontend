@@ -1,70 +1,89 @@
 import { Status } from '../../../types/fetchStatus';
 
-import { LegacyRef, useEffect } from 'react';
+import { FC, LegacyRef, useEffect, useRef } from 'react';
 
 import { useSelector } from 'react-redux';
-import { getAllPosts } from '../../../state/posts/asyncActions';
-import { clearPosts } from '../../../state/posts/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
 
 import { useInfiniteScroll } from '../../../hooks/useInfiniteScroll';
 import { scrollToTop } from '../../../utils/scrollToTop';
 
+import { getPosts } from '../../../state/posts/asyncActions';
 import PostCard from '../../ui/PostCard';
 
-const Posts = () => {
-  const dispatch = useAppDispatch();
+interface PostsProps {
+	filter: 'all' | 'feed' | 'popular';
+	username?: string;
 
-  const { posts, status, lastPage, currentPage } = useSelector(
-    (state: RootState) => state.posts
-  );
-  const { loggedInWithSubmit } = useSelector((state: RootState) => state.auth);
+	likes?: number;
+	sort?: 'asc' | 'desc';
+	limit?: number;
+	page?: number;
+}
 
-  const { page, setPage, hasMore, setHasMore, setObserverTarget } =
-    useInfiniteScroll(currentPage, lastPage, 500);
+interface UserPostsState {
+	filter: 'user_posts';
+	username: string;
 
-  useEffect(() => {
-    if (hasMore) dispatch(getAllPosts({ page }));
-  }, [dispatch, page, hasMore]);
+	likes?: number;
+	sort?: 'asc' | 'desc';
+	limit?: number;
+	page?: number;
+}
 
-  useEffect(() => {
-    if (loggedInWithSubmit) {
-      dispatch(clearPosts());
-      scrollToTop();
-      if (lastPage && lastPage > 1) setHasMore(true);
-      if (page > 1) setPage(1);
-      if (page === 1) dispatch(getAllPosts({ page }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedInWithSubmit]);
+const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
+	const firstRender = useRef(true);
 
-  return (
-    <div>
-      {posts.map((post) => (
-        <PostCard
-          key={post._id}
-          text={post.text}
-          postId={post._id}
-          likesCount={post.likesCount}
-          commentsCount={post.commentsCount}
-          isLiked={post.isLiked}
-          isOwnPost={post.isOwnPost}
-          isSinglePostPage={false}
-        />
-      ))}
+	const dispatch = useAppDispatch();
 
-      {hasMore && status === Status.SUCCESS && (
-        <div ref={setObserverTarget as LegacyRef<HTMLDivElement>}></div>
-      )}
+	const { posts, status, lastPage, currentPage } = useSelector(
+		(state: RootState) => state.posts
+	);
+	const { loggedInWithSubmit } = useSelector((state: RootState) => state.auth);
 
-      {status === Status.SUCCESS && !hasMore && (
-        <div>No {posts.length > 0 && 'more'} posts</div>
-      )}
+	const { page, hasMore, setObserverTarget } = useInfiniteScroll(
+		currentPage,
+		lastPage,
+		500
+	);
 
-      {status === Status.LOADING && <div>Loading...</div>}
+	useEffect(() => {
+		if (hasMore) dispatch(getPosts({ filter, page, username, loadNew: true }));
+	}, [dispatch, page, hasMore, filter, username]);
 
-      {status === Status.ERROR && <div>Error</div>}
-    </div>
-  );
+	useEffect(() => {
+		if (!firstRender.current) {
+			scrollToTop();
+			dispatch(getPosts({ filter, username, page: 1, loadNew: false }));
+		} else {
+			firstRender.current = false;
+		}
+	}, [loggedInWithSubmit, filter, dispatch, username]);
+
+	return (
+		<div>
+			{posts.map(post => (
+				<PostCard
+					key={post._id}
+					postId={post._id}
+					username={post.user.username}
+					{...post}
+					isSinglePostPage={false}
+				/>
+			))}
+
+			{hasMore && status === Status.SUCCESS && (
+				<div ref={setObserverTarget as LegacyRef<HTMLDivElement>}></div>
+			)}
+
+			{status === Status.SUCCESS && !hasMore && (
+				<div>No {posts.length > 0 && 'more'} posts</div>
+			)}
+
+			{status === Status.LOADING && <div>Loading...</div>}
+
+			{status === Status.ERROR && <div>Error</div>}
+		</div>
+	);
 };
 export default Posts;

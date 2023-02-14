@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { CommentsApi } from '../../../services/api/CommentsApi';
 import { addNewComment } from '../../../state/comments/slice';
+import { addCommentCountToSinglePost } from '../../../state/posts/singlePostSlice';
+import { addCommentsCount } from '../../../state/posts/slice';
 import { useAppDispatch } from '../../../state/store';
 import { Status } from '../../../types/fetchStatus';
 
@@ -44,8 +46,9 @@ const CommentForm: FC<CommentFormProps> = ({ postId }) => {
 		CommentsApi.create(postId, data.text)
 			.then(res => {
 				setStatus(Status.SUCCESS);
-				console.log(res);
 				dispatch(addNewComment(res.data));
+				dispatch(addCommentsCount(postId));
+				dispatch(addCommentCountToSinglePost());
 
 				reset();
 			})

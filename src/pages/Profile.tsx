@@ -1,9 +1,12 @@
 import { useParams } from 'react-router-dom';
+import Posts from '../components/screens/Posts';
 
 const Profile = () => {
-  const { id } = useParams();
+	const { username } = useParams();
 
-  return <div>Profile</div>;
+	return (
+		<>Profile{username && <Posts filter='user_posts' username={username} />}</>
+	);
 };
 
 export default Profile;
