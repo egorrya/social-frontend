@@ -11,8 +11,19 @@ import posts from './posts/slice';
 
 import comments from './comments/slice';
 
+import users from './users/slice';
+
 export const store = configureStore({
-  reducer: { modal, auth, posts, postCreation, postEdit, singlePost, comments },
+	reducer: {
+		modal,
+		auth,
+		posts,
+		postCreation,
+		postEdit,
+		singlePost,
+		comments,
+		users,
+	},
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -26,7 +26,7 @@ const postsSlice = createSlice({
 	name: 'posts',
 	initialState,
 	reducers: {
-		clearPosts: state => {
+		clearPosts: (state) => {
 			state.posts = [];
 			state.error = null;
 			state.lastPage = 1;
@@ -37,7 +37,7 @@ const postsSlice = createSlice({
 			state.posts = [{ ...action.payload, isOwnPost: true }, ...state.posts];
 		},
 		editPost: (state, action: PayloadAction<Post>) => {
-			state.posts = state.posts.map(post => {
+			state.posts = state.posts.map((post) => {
 				if (post._id === action.payload._id) {
 					return { ...action.payload, isOwnPost: true };
 				}
@@ -45,10 +45,10 @@ const postsSlice = createSlice({
 			});
 		},
 		deletePost: (state, action: PayloadAction<string>) => {
-			state.posts = state.posts.filter(post => post._id !== action.payload);
+			state.posts = state.posts.filter((post) => post._id !== action.payload);
 		},
 		addCommentsCount: (state, action: PayloadAction<string>) => {
-			state.posts = state.posts.map(post => {
+			state.posts = state.posts.map((post) => {
 				if (post._id === action.payload) {
 					return { ...post, commentsCount: post.commentsCount + 1 };
 				}
@@ -56,9 +56,9 @@ const postsSlice = createSlice({
 			});
 		},
 	},
-	extraReducers: builder => {
+	extraReducers: (builder) => {
 		builder
-			.addCase(getPosts.pending, state => {
+			.addCase(getPosts.pending, (state) => {
 				state.status = Status.LOADING;
 				state.error = null;
 			})

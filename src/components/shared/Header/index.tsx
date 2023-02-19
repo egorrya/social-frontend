@@ -8,45 +8,45 @@ import LogInModal from '../../screens/LogInModal';
 import SignInModal from '../../screens/RegisterModal';
 
 const Header: FC = () => {
-  const dispatch = useAppDispatch();
+	const dispatch = useAppDispatch();
 
-  const { loggedIn, user, status } = useSelector(
-    (state: RootState) => state.auth
-  );
+	const { loggedIn, user, status } = useSelector(
+		(state: RootState) => state.auth
+	);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    dispatch(logOut());
-  };
+	const handleLogout = () => {
+		localStorage.removeItem('token');
+		dispatch(logOut());
+	};
 
-  const authSectionButtons = () => {
-    if (status === Status.LOADING) return <div>Loading...</div>;
+	const authSectionButtons = () => {
+		if (status === Status.LOADING) return <div>Loading...</div>;
 
-    if (loggedIn)
-      return (
-        <>
-          <div>{user?.username}</div>
-          <button onClick={handleLogout}>Logout</button>
-        </>
-      );
+		if (loggedIn)
+			return (
+				<>
+					<Link to={`/${user?.username}`}>{user?.username}</Link>
+					<button onClick={handleLogout}>Logout</button>
+				</>
+			);
 
-    if (!loggedIn)
-      return (
-        <>
-          <LogInModal />
-          <SignInModal />
-          {status === Status.ERROR && <div>Error</div>}
-        </>
-      );
-  };
+		if (!loggedIn)
+			return (
+				<>
+					<LogInModal />
+					<SignInModal />
+					{status === Status.ERROR && <div>Error</div>}
+				</>
+			);
+	};
 
-  return (
-    <header>
-      <Link to={'/'}>Nottwitter</Link>
-      <nav></nav>
-      <div>{authSectionButtons()}</div>
-    </header>
-  );
+	return (
+		<header>
+			<Link to={'/'}>Nottwitter</Link>
+			<nav></nav>
+			<div>{authSectionButtons()}</div>
+		</header>
+	);
 };
 
 export default Header;
