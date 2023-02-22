@@ -1,15 +1,16 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchPostsOptions, PostsApi } from '../../services/api/PostsApi';
+import stringifyObj from '../../utils/stringifyObj';
 
 export const getPosts = createAsyncThunk(
 	'posts',
 	async (options: fetchPostsOptions, { rejectWithValue }) => {
 		try {
-			const { clearPosts, ...rest } = options;
+			const { clearPosts, page, ...rest } = options;
 
-			const response = await PostsApi.getPosts(rest);
+			const response = await PostsApi.getPosts({ ...rest, page });
 
-			return { ...response, clearPosts };
+			return { ...response, clearPosts, activeFilter: stringifyObj(rest) };
 		} catch (error: any) {
 			return rejectWithValue(error.response.data.message);
 		}

@@ -9,6 +9,7 @@ export interface PostsState {
 	error: unknown;
 	lastPage: number | null;
 	currentPage: number;
+	activeFilter: string;
 
 	status: Status;
 }
@@ -18,6 +19,7 @@ const initialState: PostsState = {
 	error: null,
 	lastPage: null,
 	currentPage: 1,
+	activeFilter: '',
 
 	status: Status.NEVER,
 };
@@ -32,6 +34,8 @@ const postsSlice = createSlice({
 			state.lastPage = 1;
 			state.status = Status.NEVER;
 			state.currentPage = 1;
+
+			state.activeFilter = '';
 		},
 		addNewPost: (state, action: PayloadAction<Post>) => {
 			state.posts = [action.payload, ...state.posts];
@@ -72,6 +76,8 @@ const postsSlice = createSlice({
 				state.error = null;
 				state.lastPage = action.payload.last_page;
 				state.currentPage = action.payload.page;
+
+				state.activeFilter = action.payload.activeFilter;
 			})
 			.addCase(getPosts.rejected, (state, action) => {
 				state.status = Status.ERROR;
