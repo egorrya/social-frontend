@@ -35,7 +35,7 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 
 	return (
 		<div>
-			{comments.map(comment => (
+			{comments.map((comment) => (
 				<div key={comment._id}>
 					<div>{comment.user.username}</div>
 					<div>{comment.text}</div>

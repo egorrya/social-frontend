@@ -9,21 +9,12 @@ export interface Post {
 	};
 	text: string;
 	commentsCount: number;
-	isLiked: boolean;
+	post_likes: string[];
 	likesCount: number;
-	isOwnPost: boolean;
 }
 
 export interface PostCardProps {
-	postId: string;
-
-	username: string;
-	createdAt: string;
-	text: string;
-	likesCount: number;
-	commentsCount: number;
-	isLiked: boolean;
-	isOwnPost: boolean;
+	postData: Post;
 
 	isSinglePostPage?: boolean;
 }

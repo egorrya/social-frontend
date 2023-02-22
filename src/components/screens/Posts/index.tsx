@@ -1,12 +1,11 @@
 import { Status } from '../../../types/fetchStatus';
 
-import { FC, LegacyRef, useEffect, useRef } from 'react';
+import { FC, LegacyRef, useCallback, useEffect } from 'react';
 
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../../state/store';
 
 import { useInfiniteScroll } from '../../../hooks/useInfiniteScroll';
-import { scrollToTop } from '../../../utils/scrollToTop';
 
 import { getPosts } from '../../../state/posts/asyncActions';
 import PostCard from '../../ui/PostCard';
@@ -18,7 +17,6 @@ interface PostsProps {
 	likes?: number;
 	sort?: 'asc' | 'desc';
 	limit?: number;
-	page?: number;
 }
 
 interface UserPostsState {
@@ -28,48 +26,47 @@ interface UserPostsState {
 	likes?: number;
 	sort?: 'asc' | 'desc';
 	limit?: number;
-	page?: number;
 }
 
-const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
-	const firstRender = useRef(true);
-
+const Posts: FC<PostsProps | UserPostsState> = ({
+	filter,
+	username,
+	likes,
+	sort,
+	limit,
+}) => {
 	const dispatch = useAppDispatch();
 
 	const { posts, status, lastPage, currentPage } = useSelector(
 		(state: RootState) => state.posts
 	);
-	const { loggedInWithSubmit } = useSelector((state: RootState) => state.auth);
 
-	const { page, hasMore, setObserverTarget } = useInfiniteScroll(
-		currentPage,
-		lastPage,
-		500
+	const { page, setPage, hasMore, setHasMore, setObserverTarget } =
+		useInfiniteScroll(currentPage, lastPage, 500);
+
+	const handleDispatch = useCallback(
+		(page: number, clearPosts?: boolean) => {
+			dispatch(
+				getPosts({ filter, page, likes, sort, limit, clearPosts, username })
+			);
+		},
+		[dispatch, filter, likes, sort, limit, username]
 	);
 
 	useEffect(() => {
-		if (hasMore) dispatch(getPosts({ filter, page, username, loadNew: true }));
-	}, [dispatch, page, hasMore, filter, username]);
+		if (hasMore && status === Status.SUCCESS && page > 1) handleDispatch(page);
+	}, [page, hasMore, status, dispatch, handleDispatch]);
 
 	useEffect(() => {
-		if (!firstRender.current) {
-			scrollToTop();
-			dispatch(getPosts({ filter, username, page: 1, loadNew: false }));
-		} else {
-			firstRender.current = false;
-		}
-	}, [loggedInWithSubmit, filter, dispatch, username]);
+		setPage(1);
+		setHasMore(true);
+		handleDispatch(1, true);
+	}, [handleDispatch, setHasMore, setPage]);
 
 	return (
 		<div>
-			{posts.map(post => (
-				<PostCard
-					key={post._id}
-					postId={post._id}
-					username={post.user.username}
-					{...post}
-					isSinglePostPage={false}
-				/>
+			{posts.map((post) => (
+				<PostCard key={post._id} postData={post} isSinglePostPage={false} />
 			))}
 
 			{hasMore && status === Status.SUCCESS && (

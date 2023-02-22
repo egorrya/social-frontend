@@ -11,7 +11,7 @@ export interface fetchPostsOptions {
 	limit?: number;
 	page?: number;
 
-	loadNew: boolean;
+	clearPosts?: boolean;
 }
 
 export const PostsApi = {

@@ -5,6 +5,7 @@ import { RootState, useAppDispatch } from '../../../state/store';
 import { getFollowUsers } from '../../../state/users/asyncActions';
 import { clearUsers } from '../../../state/users/slice';
 import { Status } from '../../../types/fetchStatus';
+import FollowButton from '../../ui/FollowButton';
 
 interface FollowListProps {
 	type: 'followers' | 'following';
@@ -17,6 +18,8 @@ const FollowList: FC<FollowListProps> = ({ type, username }) => {
 	const { users, lastPage, currentPage, status, error } = useSelector(
 		(state: RootState) => state.users
 	);
+
+	const { loggedIn } = useSelector((state: RootState) => state.auth);
 
 	const { page, hasMore, setObserverTarget } = useInfiniteScroll(
 		currentPage,
@@ -35,9 +38,13 @@ const FollowList: FC<FollowListProps> = ({ type, username }) => {
 	}, [dispatch]);
 
 	return (
-		<div>
+		<>
 			{users.map((user) => (
-				<div key={user._id}>{user.username}</div>
+				<>
+					<div>{user.username}</div>
+
+					{loggedIn && <FollowButton user={user} />}
+				</>
 			))}
 
 			{hasMore && status === Status.SUCCESS && (
@@ -51,7 +58,7 @@ const FollowList: FC<FollowListProps> = ({ type, username }) => {
 			{status === Status.LOADING && <div>Loading...</div>}
 
 			{status === Status.ERROR && <div>{error as string}</div>}
-		</div>
+		</>
 	);
 };
 

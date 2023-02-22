@@ -11,18 +11,23 @@ import posts from './posts/slice';
 
 import comments from './comments/slice';
 
+import singleUser from './users/singleUserSlice';
 import users from './users/slice';
 
 export const store = configureStore({
 	reducer: {
 		modal,
 		auth,
+
 		posts,
 		postCreation,
 		postEdit,
 		singlePost,
+
 		comments,
+
 		users,
+		singleUser,
 	},
 });
 

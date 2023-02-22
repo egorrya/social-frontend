@@ -19,7 +19,7 @@ const initialState: PostsState = {
 	lastPage: null,
 	currentPage: 1,
 
-	status: Status.LOADING,
+	status: Status.NEVER,
 };
 
 const postsSlice = createSlice({
@@ -34,12 +34,12 @@ const postsSlice = createSlice({
 			state.currentPage = 1;
 		},
 		addNewPost: (state, action: PayloadAction<Post>) => {
-			state.posts = [{ ...action.payload, isOwnPost: true }, ...state.posts];
+			state.posts = [action.payload, ...state.posts];
 		},
 		editPost: (state, action: PayloadAction<Post>) => {
 			state.posts = state.posts.map((post) => {
 				if (post._id === action.payload._id) {
-					return { ...action.payload, isOwnPost: true };
+					return action.payload;
 				}
 				return post;
 			});
@@ -63,10 +63,10 @@ const postsSlice = createSlice({
 				state.error = null;
 			})
 			.addCase(getPosts.fulfilled, (state, action) => {
-				if (action.payload.loadNew === true) {
-					state.posts = [...state.posts, ...action.payload.data];
-				} else {
+				if (action.payload.clearPosts) {
 					state.posts = action.payload.data;
+				} else {
+					state.posts = [...state.posts, ...action.payload.data];
 				}
 				state.status = Status.SUCCESS;
 				state.error = null;

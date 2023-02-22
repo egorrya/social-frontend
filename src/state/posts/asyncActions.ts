@@ -5,10 +5,11 @@ export const getPosts = createAsyncThunk(
 	'posts',
 	async (options: fetchPostsOptions, { rejectWithValue }) => {
 		try {
-			const { loadNew, ...rest } = options;
+			const { clearPosts, ...rest } = options;
+
 			const response = await PostsApi.getPosts(rest);
 
-			return { ...response, loadNew };
+			return { ...response, clearPosts };
 		} catch (error: any) {
 			return rejectWithValue(error.response.data.message);
 		}

@@ -3,8 +3,8 @@ export interface User {
 	fullName?: string;
 	username: string;
 	email: string;
-	following?: number;
-	followers?: number;
+	following: Array<string>;
+	followers: Array<string>;
 	createdAt: Date;
 	updatedAt: Date;
 	__v: number;

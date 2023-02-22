@@ -33,13 +33,7 @@ const SinglePost: FC<SinglePostProps> = ({ postId }) => {
 	return (
 		<>
 			{post && status === Status.SUCCESS && (
-				<PostCard
-					key={post._id}
-					postId={post._id}
-					username={post.user.username}
-					{...post}
-					isSinglePostPage={false}
-				/>
+				<PostCard key={post._id} postData={post} isSinglePostPage={false} />
 			)}
 		</>
 	);

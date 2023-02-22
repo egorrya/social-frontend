@@ -36,9 +36,9 @@ export const useInfiniteScroll = (
 
 	useEffect(() => {
 		observer.current = new IntersectionObserver(
-			entries => {
+			(entries) => {
 				if (entries[0].isIntersecting) {
-					setPage(prev => prev + 1);
+					setPage((prev) => prev + 1);
 				}
 			},
 			{

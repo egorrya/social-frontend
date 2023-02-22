@@ -10,7 +10,7 @@ export interface fetchFollowUsersOptions {
 
 export const FollowApi = {
 	async toggleFollow(userId: string) {
-		const { data } = await axios.post(`/follow/`, { params: { id: userId } });
+		const { data } = await axios.post(`/follow/`, { id: userId });
 
 		return data;
 	},
