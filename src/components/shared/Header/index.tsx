@@ -6,6 +6,9 @@ import { RootState, useAppDispatch } from '../../../state/store';
 import { Status } from '../../../types/fetchStatus';
 import LogInModal from '../../screens/LogInModal';
 import SignInModal from '../../screens/RegisterModal';
+import Button from '../../ui/Button';
+
+import styles from './Header.module.scss';
 
 const Header: FC = () => {
 	const dispatch = useAppDispatch();
@@ -25,8 +28,10 @@ const Header: FC = () => {
 		if (loggedIn)
 			return (
 				<>
-					<Link to={`/${user?.username}`}>{user?.username}</Link>
-					<button onClick={handleLogout}>Logout</button>
+					<Link className={styles.profileName} to={`/${user?.username}`}>
+						{user?.username}
+					</Link>
+					<Button onClick={handleLogout} text='Logout' />
 				</>
 			);
 
@@ -41,9 +46,10 @@ const Header: FC = () => {
 	};
 
 	return (
-		<header>
-			<Link to={'/'}>Nottwitter</Link>
-			<nav></nav>
+		<header className={styles.header}>
+			<Link className={styles.header__logo} to={'/'}>
+				Nottwitter
+			</Link>
 			<div>{authSectionButtons()}</div>
 		</header>
 	);

@@ -1,0 +1,84 @@
+@import 'mixins';
+@import 'fonts';
+
+*,
+*::after,
+*::before {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html,
+body {
+	max-width: 100%;
+	overflow-x: hidden;
+}
+
+html {
+	scroll-behavior: smooth;
+
+	font-size: 62.5%; // 1rem = 10px
+
+	@include respond(tab-land) {
+		font-size: 56.25%;
+	}
+
+	@include respond(tab-port) {
+		font-size: 50%;
+	}
+
+	@include respond(big-desk) {
+		font-size: 75%;
+	}
+}
+
+body {
+	max-width: 100%;
+	overflow-x: hidden;
+	position: relative;
+	box-sizing: border-box;
+
+	font-family: 'Montserrat', sans-serif;
+	font-size: 1.5rem;
+	line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: 'Montserrat', sans-serif;
+}
+
+h1 {
+	font-size: 4.6rem;
+	font-weight: 600;
+}
+
+h2 {
+	font-size: 3.6rem;
+	font-weight: 600;
+}
+
+h3 {
+	font-size: 2.8rem;
+	font-weight: 600;
+}
+
+h4 {
+	font-size: 2.2rem;
+	font-weight: 600;
+}
+
+h5 {
+	font-size: 1.8rem;
+	font-weight: 600;
+}
+
+h6 {
+	font-size: 1.6rem;
+	font-weight: 600;
+}

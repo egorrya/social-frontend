@@ -5,43 +5,25 @@ import { PostsApi } from '../../../services/api/PostsApi';
 import { changeEditableId } from '../../../state/posts/postEditSlice';
 import { deletePost } from '../../../state/posts/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
-import { Status } from '../../../types/fetchStatus';
 
-import LikeButton from '../LikeButton';
 import PostForm from '../PostForm';
 import { PostCardProps } from './types';
+
+import dateChanger from '../../../utils/dateChanger';
+import Button from '../Button';
+import LikeButton from '../LikeButton';
+import styles from './PostCard.module.scss';
 
 const PostCard: FC<PostCardProps> = ({ postData, isSinglePostPage }) => {
 	const dispatch = useAppDispatch();
 
 	const { user: authUser } = useSelector((state: RootState) => state.auth);
 	const { editableId } = useSelector((state: RootState) => state.postEdit);
-
-	const [isLiked, setIsLiked] = useState(false);
 	const [isOwnPost, setIsOwnPost] = useState(false);
-	const [likesCount, setLikesCount] = useState(postData.likesCount);
-	const [likeStatus, setLikeStatus] = useState(Status.NEVER);
 
 	useEffect(() => {
-		if (authUser) {
-			setIsOwnPost(authUser._id === postData.user._id);
-			setIsLiked(postData.post_likes?.includes(authUser._id));
-		}
+		setIsOwnPost(authUser ? authUser._id === postData.user._id : false);
 	}, [authUser, postData]);
-
-	const handleLike = async () => {
-		await setLikeStatus(Status.LOADING);
-
-		await PostsApi.toggleLike(postData._id)
-			.then((data) => {
-				setLikeStatus(Status.SUCCESS);
-				setLikesCount(data.likesCount);
-				setIsLiked(!isLiked);
-			})
-			.catch((err) => {
-				setLikeStatus(Status.ERROR);
-			});
-	};
 
 	const handleDelete = () => {
 		const shouldDelete = window.confirm(
@@ -70,45 +52,39 @@ const PostCard: FC<PostCardProps> = ({ postData, isSinglePostPage }) => {
 			</>
 		);
 
-	const content = () => {
-		return (
-			<>
-				<h3>{postData.text}</h3>
-				<div>{likesCount} likes</div>
-				<div>{postData.commentsCount} comments</div>
-			</>
-		);
-	};
-
 	return (
-		<div>
-			<Link to={`/${postData.user.username}`}>
-				<div>{postData.user.username}</div>
-				<div>{postData.createdAt}</div>
-			</Link>
+		<>
+			<div className={styles.card}>
+				<Link className={styles.card__header} to={`/${postData.user.username}`}>
+					<div className={styles.card__avatar}>
+						{postData.user.username.split('')[0]}
+					</div>
+					<div className={styles.card__info}>
+						<p>{postData.user.username}</p>
+						<p>{dateChanger(postData.createdAt)}</p>
+					</div>
+				</Link>
 
-			{!isSinglePostPage ? (
-				<Link to={`/posts/${postData._id}`}>{content()}</Link>
-			) : (
-				content()
-			)}
+				{!isSinglePostPage ? (
+					<Link className={styles.card__body} to={`/posts/${postData._id}`}>
+						<p>{postData.text}</p>
+					</Link>
+				) : (
+					<div className={styles.card__body}>
+						<p>{postData.text}</p>
+					</div>
+				)}
 
-			{authUser && (
-				<>
-					<LikeButton
-						likeStatus={likeStatus}
-						isLiked={isLiked}
-						handleLike={handleLike}
-					/>
-					{isOwnPost && (
-						<>
-							<button onClick={handleDelete}>Delete</button>
-							<button onClick={handleEdit}>Edit</button>
-						</>
-					)}
-				</>
+				<LikeButton postId={postData._id} likes={postData.post_likes} />
+			</div>
+
+			{isOwnPost && (
+				<div style={{ marginBottom: '1rem' }}>
+					<Button onClick={handleDelete} text='Delete' />
+					<Button onClick={handleEdit} text='Edit' />
+				</div>
 			)}
-		</div>
+		</>
 	);
 };
 

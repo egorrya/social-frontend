@@ -9,7 +9,7 @@ function App() {
 	useCheckAuth();
 
 	return (
-		<div className='App'>
+		<>
 			<Routes>
 				<Route path='*' element={<NotFound />} />
 				<Route path='/' element={<Home />} />
@@ -20,7 +20,7 @@ function App() {
 				<Route path='/:username/followers' element={<Followers />} />
 				<Route path='/:username/following' element={<Following />} />
 			</Routes>
-		</div>
+		</>
 	);
 }
 

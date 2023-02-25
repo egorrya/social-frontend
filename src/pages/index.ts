@@ -14,6 +14,7 @@ export { Home, Login, Profile, NotFound, Post };
 // TODO: add posts filter
 // TODO: add comment sorting
 // TODO: add a comment likes
+// TODO: add link filters on home page
 
 // backend
 // TODO: delete user posts on user delete

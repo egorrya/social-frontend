@@ -51,13 +51,13 @@ const PostForm: FC<PostFormProps> = ({ type, textareaValue }) => {
 		setStatus(Status.LOADING);
 
 		PostsApi.createPost(data.text)
-			.then(res => {
+			.then((res) => {
 				setStatus(Status.SUCCESS);
 				dispatch(addNewPost(res.data));
 
 				reset();
 			})
-			.catch(err => {
+			.catch((err) => {
 				setStatus(Status.ERROR);
 			});
 	};
@@ -68,13 +68,13 @@ const PostForm: FC<PostFormProps> = ({ type, textareaValue }) => {
 		setEditStatus(Status.LOADING);
 
 		PostsApi.editPost(data.text, editableId)
-			.then(res => {
+			.then((res) => {
 				setEditStatus(Status.SUCCESS);
 
 				dispatch(editPost(res.data));
 				dispatch(changeEditableId(null));
 			})
-			.catch(err => {
+			.catch((err) => {
 				setEditStatus(Status.ERROR);
 			});
 	};

@@ -1,34 +1,17 @@
 import { Status } from '../../../types/fetchStatus';
 
-import { FC, useCallback, useEffect } from 'react';
+import { FC, memo, useCallback, useEffect } from 'react';
 
 import { useSelector } from 'react-redux';
+import { getPosts } from '../../../state/posts/asyncActions';
 import { RootState, useAppDispatch } from '../../../state/store';
 
 import { useInfiniteScroll } from '../../../hooks/useInfiniteScroll';
 
-import { getPosts } from '../../../state/posts/asyncActions';
 import { scrollToTop } from '../../../utils/scrollToTop';
 import stringifyObj from '../../../utils/stringifyObj';
 import PostCard from '../../ui/PostCard';
-
-interface PostsProps {
-	filter: 'all' | 'feed' | 'popular';
-	username?: string;
-
-	likes?: number;
-	sort?: 'asc' | 'desc';
-	limit?: number;
-}
-
-interface UserPostsState {
-	filter: 'user_posts';
-	username: string;
-
-	likes?: number;
-	sort?: 'asc' | 'desc';
-	limit?: number;
-}
+import { PostsProps, UserPostsState } from './types';
 
 const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
 	const dispatch = useAppDispatch();
@@ -50,8 +33,10 @@ const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
 	const activeFilterString = stringifyObj({ filter, username });
 
 	useEffect(() => {
-		if (hasMore && status === Status.SUCCESS && page > 1) handleDispatch(page);
-	}, [page, hasMore, status, dispatch, handleDispatch]);
+		if (hasMore && status === Status.SUCCESS && page > 1) {
+			handleDispatch(page);
+		}
+	}, [page, hasMore, status, handleDispatch]);
 
 	useEffect(() => {
 		if (posts.length === 0 || activeFilter !== activeFilterString) {
@@ -89,4 +74,4 @@ const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
 		</div>
 	);
 };
-export default Posts;
+export default memo(Posts);

@@ -1,46 +1,64 @@
-import { FC, useState } from 'react';
+import { FC, MouseEvent, useState } from 'react';
 import { useSelector } from 'react-redux';
+import CloseIcon from '../../../assets/svg/CloseIcon';
 import { disableModal, setActiveModalId } from '../../../state/modal/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
+import Button from '../Button';
+
+import styles from './Modal.module.scss';
 
 interface ModalProps {
-  title: string;
-  children: React.ReactNode;
-  id: string;
+	title: string;
+	children: React.ReactNode;
+	id: string;
 }
 
 const Modal: FC<ModalProps> = ({ title, children, id }) => {
-  const dispatch = useAppDispatch();
-  const { activeModalId } = useSelector((state: RootState) => state.modal);
+	const dispatch = useAppDispatch();
+	const { activeModalId } = useSelector((state: RootState) => state.modal);
 
-  const [showModal, setShowModal] = useState(false);
+	const [showModal, setShowModal] = useState(false);
 
-  const handleClose = () => {
-    dispatch(disableModal());
+	const handleClose = (event: MouseEvent) => {
+		const target = event.target as HTMLElement | SVGElement;
 
-    setShowModal(false);
-  };
+		if (
+			target.className === styles.overlay ||
+			target.tagName === 'svg' ||
+			target.tagName === 'path'
+		) {
+			dispatch(disableModal());
 
-  const handleOpen = () => {
-    if (id) dispatch(setActiveModalId(id));
+			setShowModal(false);
+		}
+	};
 
-    setShowModal(true);
-  };
+	const handleOpen = () => {
+		if (id) dispatch(setActiveModalId(id));
 
-  return (
-    <>
-      <button onClick={handleOpen}>{title}</button>
-      {showModal && activeModalId === id && (
-        <div className='modal'>
-          <div className='modal-header'>
-            <h2>{title}</h2>
-            <button onClick={handleClose}>Close</button>
-          </div>
-          <div className='modal-body'>{children}</div>
-        </div>
-      )}
-    </>
-  );
+		setShowModal(true);
+	};
+
+	return (
+		<>
+			<Button onClick={handleOpen} text={title} />
+			{showModal && activeModalId === id && (
+				<div onClick={handleClose} className={styles.overlay}>
+					<div className={styles.modal}>
+						<div className={styles.modal__header}>
+							<h3 className={styles.modal__title}>{title}</h3>
+
+							<CloseIcon
+								className={styles.modal__close}
+								onClick={handleClose}
+							/>
+						</div>
+						<div className={styles.modal__body}>{children}</div>
+					</div>
+				</div>
+			)}
+		</>
+	);
 };
 
 export default Modal;
