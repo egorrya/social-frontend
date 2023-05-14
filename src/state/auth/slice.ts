@@ -54,6 +54,19 @@ const authSlice = createSlice({
 			state.loggedIn = false;
 			state.loggedInWithSubmit = false;
 		},
+
+		toggleFollow: (state, action: PayloadAction<string>) => {
+			if (state.user) {
+				const { following } = state.user;
+				const { payload: userId } = action;
+
+				if (following.includes(userId)) {
+					state.user.following = following.filter((id) => id !== userId);
+				} else {
+					state.user.following = [...following, userId];
+				}
+			}
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -74,5 +87,5 @@ const authSlice = createSlice({
 	},
 });
 
-export const { logOut } = authSlice.actions;
+export const { logOut, toggleFollow } = authSlice.actions;
 export default authSlice.reducer;

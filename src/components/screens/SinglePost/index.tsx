@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { getPost } from '../../../state/posts/asyncActions';
 import { RootState, useAppDispatch } from '../../../state/store';
 import { Status } from '../../../types/fetchStatus';
+import Loader from '../../ui/Loader';
 import PostCard from '../../ui/PostCard';
 
 interface SinglePostProps {
@@ -26,14 +27,14 @@ const SinglePost: FC<SinglePostProps> = ({ postId }) => {
 		if (loggedInWithSubmit && postId) dispatch(getPost(postId));
 	}, [dispatch, loggedInWithSubmit, postId]);
 
-	if (status === Status.LOADING) return <div>Loading...</div>;
+	if (status === Status.LOADING) return <Loader />;
 
 	if (status === Status.ERROR) return <div>{error as string}</div>;
 
 	return (
 		<>
-			{post && status === Status.SUCCESS && (
-				<PostCard key={post._id} postData={post} isSinglePostPage={false} />
+			{post && (
+				<PostCard key={post._id} postData={post} isSinglePostPage={true} />
 			)}
 		</>
 	);

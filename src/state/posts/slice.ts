@@ -10,6 +10,7 @@ export interface PostsState {
 	lastPage: number | null;
 	currentPage: number;
 	activeFilter: string;
+	deleted: number;
 
 	status: Status;
 }
@@ -20,6 +21,7 @@ const initialState: PostsState = {
 	lastPage: null,
 	currentPage: 1,
 	activeFilter: '',
+	deleted: 0,
 
 	status: Status.NEVER,
 };
@@ -31,7 +33,7 @@ const postsSlice = createSlice({
 		clearPosts: (state) => {
 			state.posts = [];
 			state.error = null;
-			state.lastPage = 1;
+			state.lastPage = null;
 			state.status = Status.NEVER;
 			state.currentPage = 1;
 
@@ -43,13 +45,14 @@ const postsSlice = createSlice({
 		editPost: (state, action: PayloadAction<Post>) => {
 			state.posts = state.posts.map((post) => {
 				if (post._id === action.payload._id) {
-					return action.payload;
+					return { ...action.payload, commentsCount: post.commentsCount };
 				}
 				return post;
 			});
 		},
 		deletePost: (state, action: PayloadAction<string>) => {
 			state.posts = state.posts.filter((post) => post._id !== action.payload);
+			state.deleted = state.deleted + 1;
 		},
 		addCommentsCount: (state, action: PayloadAction<string>) => {
 			state.posts = state.posts.map((post) => {
@@ -70,12 +73,21 @@ const postsSlice = createSlice({
 				if (action.payload.clearPosts) {
 					state.posts = action.payload.data;
 				} else {
-					state.posts = [...state.posts, ...action.payload.data];
+					state.posts = [
+						...state.posts.filter(
+							(post) =>
+								!action.payload.data.some(
+									(newPost: { _id: string }) => newPost._id === post._id
+								)
+						),
+						...action.payload.data,
+					];
 				}
 				state.status = Status.SUCCESS;
 				state.error = null;
 				state.lastPage = action.payload.last_page;
 				state.currentPage = action.payload.page;
+				state.deleted = 0;
 
 				state.activeFilter = action.payload.activeFilter;
 			})

@@ -1,77 +1,124 @@
 import { Status } from '../../../types/fetchStatus';
 
-import { FC, memo, useCallback, useEffect } from 'react';
+import { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 import { getPosts } from '../../../state/posts/asyncActions';
+import { clearPosts } from '../../../state/posts/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
 
 import { useInfiniteScroll } from '../../../hooks/useInfiniteScroll';
 
-import { scrollToTop } from '../../../utils/scrollToTop';
 import stringifyObj from '../../../utils/stringifyObj';
+import EmptyCard from '../../ui/EmptyCard';
+import Loader from '../../ui/Loader';
 import PostCard from '../../ui/PostCard';
 import { PostsProps, UserPostsState } from './types';
+
+import styles from './Posts.module.scss';
+
+const POSTS_PER_PAGE = 20;
+const SCROLL_DELAY = 500;
 
 const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
 	const dispatch = useAppDispatch();
 
-	const { posts, status, lastPage, currentPage, activeFilter } = useSelector(
-		(state: RootState) => state.posts
-	);
+	const [before, setBefore] = useState<string>('');
 
-	const { page, setPage, hasMore, setHasMore, setObserverTarget } =
-		useInfiniteScroll(currentPage, lastPage, 500);
+	const { posts, status, lastPage, currentPage, activeFilter, deleted } =
+		useSelector((state: RootState) => state.posts);
+
+	const { page, setPage, hasMore, setObserverTarget } = useInfiniteScroll(
+		currentPage,
+		lastPage,
+		SCROLL_DELAY
+	);
 
 	const handleDispatch = useCallback(
 		(page: number, clearPosts?: boolean) => {
-			dispatch(getPosts({ filter, username, page, clearPosts }));
+			dispatch(getPosts({ filter, username, page, clearPosts, before }));
 		},
-		[dispatch, filter, username]
+		[dispatch, filter, username, before]
 	);
 
-	const activeFilterString = stringifyObj({ filter, username });
+	const activeFilterString = useMemo(
+		() => stringifyObj({ filter, username, before }),
+		[filter, username, before]
+	);
 
 	useEffect(() => {
-		if (hasMore && status === Status.SUCCESS && page > 1) {
+		setBefore(new Date().toISOString());
+	}, [setBefore]);
+
+	useEffect(() => {
+		if (
+			hasMore &&
+			status === Status.SUCCESS &&
+			page > currentPage &&
+			page > 1
+		) {
 			handleDispatch(page);
 		}
-	}, [page, hasMore, status, handleDispatch]);
+	}, [page, hasMore, status, handleDispatch, currentPage]);
 
 	useEffect(() => {
-		if (posts.length === 0 || activeFilter !== activeFilterString) {
-			scrollToTop();
-			setPage(1);
-			setHasMore(true);
+		if (
+			deleted &&
+			deleted % POSTS_PER_PAGE === 1 &&
+			lastPage &&
+			lastPage > currentPage
+		) {
+			handleDispatch(page);
+		}
+	}, [currentPage, deleted, lastPage, page, handleDispatch]);
+
+	useEffect(() => {
+		if (
+			before &&
+			((!activeFilter && posts.length === 0) ||
+				activeFilter !== activeFilterString)
+		) {
+			dispatch(clearPosts());
 			handleDispatch(1, true);
+
+			setPage(1);
 		}
 	}, [
 		activeFilter,
 		activeFilterString,
-		handleDispatch,
+		before,
 		posts.length,
-		setHasMore,
+		handleDispatch,
 		setPage,
+		dispatch,
 	]);
 
 	return (
-		<div>
-			{posts.map((post) => (
-				<PostCard key={post._id} postData={post} isSinglePostPage={false} />
-			))}
+		<>
+			<div className={styles.posts}>
+				{posts.map((post) => (
+					<PostCard key={post._id} postData={post} isSinglePostPage={false} />
+				))}
+			</div>
 
 			{hasMore && status === Status.SUCCESS && (
-				<div ref={setObserverTarget}></div>
+				<div ref={setObserverTarget}>Load More</div>
 			)}
 
-			{status === Status.SUCCESS && !hasMore && (
-				<div>No {posts.length > 0 && 'more'} posts</div>
+			{!hasMore && status === Status.SUCCESS && (
+				<EmptyCard emoji='🤷‍♂️' border={false} gradient={false}>
+					No {posts.length > 0 && 'more'} posts
+				</EmptyCard>
 			)}
 
-			{status === Status.LOADING && <div>Loading...</div>}
+			{status === Status.ERROR && (
+				<EmptyCard emoji='😢' border={false} gradient={false}>
+					Hm, Something went wrong
+				</EmptyCard>
+			)}
 
-			{status === Status.ERROR && <div>Error</div>}
-		</div>
+			{status === Status.LOADING && <Loader />}
+		</>
 	);
 };
 export default memo(Posts);

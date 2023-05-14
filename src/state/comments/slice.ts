@@ -1,17 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Comment } from '../../types';
 import { Status } from '../../types/fetchStatus';
 import { getAllComments } from './asyncActions';
-
-interface Comment {
-	_id: string;
-	text: string;
-	user: {
-		_id: string;
-		username: string;
-		avatar?: string;
-	};
-	createdAt: string;
-}
 
 interface CommentsState {
 	comments: Comment[];
@@ -33,7 +23,7 @@ const commentsSlice = createSlice({
 	name: 'comments',
 	initialState,
 	reducers: {
-		clearComments: state => {
+		clearComments: (state) => {
 			state.comments = [];
 			state.error = null;
 			state.lastPage = null;
@@ -44,9 +34,9 @@ const commentsSlice = createSlice({
 			state.comments = [action.payload, ...state.comments];
 		},
 	},
-	extraReducers: builder => {
+	extraReducers: (builder) => {
 		builder
-			.addCase(getAllComments.pending, state => {
+			.addCase(getAllComments.pending, (state) => {
 				state.status = Status.LOADING;
 				state.error = null;
 			})

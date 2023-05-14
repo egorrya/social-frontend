@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { useCheckAuth } from './hooks/useCheckAuth';
 
-import { Home, Login, NotFound, Post, Profile } from './pages';
+import { Home, NotFound, Post, Profile } from './pages';
 import Followers from './pages/Profile/Followers';
 import Following from './pages/Profile/Following';
 
@@ -13,7 +13,6 @@ function App() {
 			<Routes>
 				<Route path='*' element={<NotFound />} />
 				<Route path='/' element={<Home />} />
-				<Route path='/login' element={<Login />} />
 
 				<Route path='/posts/:id' element={<Post />} />
 				<Route path='/:username' element={<Profile />} />

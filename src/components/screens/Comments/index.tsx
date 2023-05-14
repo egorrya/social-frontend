@@ -1,17 +1,23 @@
-import { FC, LegacyRef, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useInfiniteScroll } from '../../../hooks/useInfiniteScroll';
 import { getAllComments } from '../../../state/comments/asyncActions';
 import { clearComments } from '../../../state/comments/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
 import { Status } from '../../../types/fetchStatus';
+import CommentCard from '../../ui/CommentCard';
+import EmptyCard from '../../ui/EmptyCard';
 
 interface CommentsProps {
 	postId: string | undefined;
 }
 
+const SCROLL_DELAY = 100;
+
 const Comments: FC<CommentsProps> = ({ postId }) => {
 	const dispatch = useAppDispatch();
+
+	const [before, setBefore] = useState<string>('');
 
 	const { comments, status, lastPage, currentPage, error } = useSelector(
 		(state: RootState) => state.comments
@@ -20,12 +26,17 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 	const { page, hasMore, setObserverTarget } = useInfiniteScroll(
 		currentPage,
 		lastPage,
-		100
+		SCROLL_DELAY
 	);
 
 	useEffect(() => {
-		if (postId && hasMore) dispatch(getAllComments({ postId, page }));
-	}, [dispatch, hasMore, page, postId]);
+		if (postId && hasMore && before)
+			dispatch(getAllComments({ postId, page, before }));
+	}, [dispatch, hasMore, page, postId, before]);
+
+	useEffect(() => {
+		setBefore(new Date().toISOString());
+	}, [setBefore]);
 
 	useEffect(() => {
 		return () => {
@@ -36,22 +47,24 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 	return (
 		<div>
 			{comments.map((comment) => (
-				<div key={comment._id}>
-					<div>{comment.user.username}</div>
-					<div>{comment.text}</div>
-				</div>
+				<CommentCard key={comment._id} commentData={comment} />
 			))}
 
 			{hasMore && status === Status.SUCCESS && (
-				<div ref={setObserverTarget as LegacyRef<HTMLDivElement>}></div>
+				<div ref={setObserverTarget}></div>
 			)}
 
-			{status === Status.SUCCESS && !hasMore && (
-				<div>No {comments.length > 0 && 'more'} comments</div>
+			{!hasMore && comments.length === 0 && status === Status.SUCCESS && (
+				<EmptyCard emoji='🦭' gradient={false}>
+					There are no comments yet. Be first
+				</EmptyCard>
 			)}
-			{status === Status.LOADING && <div>Loading...</div>}
 
-			{status === Status.ERROR && <div>{error as string}</div>}
+			{status === Status.ERROR && (
+				<EmptyCard emoji='😢' gradient={false}>
+					{error as string}
+				</EmptyCard>
+			)}
 		</div>
 	);
 };

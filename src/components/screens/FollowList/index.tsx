@@ -1,11 +1,17 @@
-import { FC, LegacyRef, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { useInfiniteScroll } from '../../../hooks/useInfiniteScroll';
 import { RootState, useAppDispatch } from '../../../state/store';
 import { getFollowUsers } from '../../../state/users/asyncActions';
 import { clearUsers } from '../../../state/users/slice';
 import { Status } from '../../../types/fetchStatus';
-import FollowButton from '../../ui/FollowButton';
+import FollowButton from '../../ui/Buttons/FollowButton';
+import EmptyCard from '../../ui/EmptyCard';
+import Loader from '../../ui/Loader';
+import UserAvatar from '../../ui/UserAvatar';
+
+import styles from './FollowList.module.scss';
 
 interface FollowListProps {
 	type: 'followers' | 'following';
@@ -21,7 +27,7 @@ const FollowList: FC<FollowListProps> = ({ type, username }) => {
 
 	const { loggedIn } = useSelector((state: RootState) => state.auth);
 
-	const { page, hasMore, setObserverTarget } = useInfiniteScroll(
+	const { page, hasMore, setHasMore, setObserverTarget } = useInfiniteScroll(
 		currentPage,
 		lastPage,
 		100
@@ -35,29 +41,47 @@ const FollowList: FC<FollowListProps> = ({ type, username }) => {
 		return () => {
 			dispatch(clearUsers());
 		};
-	}, [dispatch]);
+	}, [dispatch, setHasMore]);
 
 	return (
 		<>
 			{users.map((user) => (
-				<>
-					<div>{user.username}</div>
+				<div className={styles.FollowListItem} key={user._id}>
+					<Link
+						to={`/${user.username}`}
+						className={styles.FollowListItem__userInfo}
+					>
+						<UserAvatar
+							size='small'
+							username={user.username}
+							imageSrc={user.avatar}
+						/>
+						<p>
+							<strong>{user.fullName && user.fullName}</strong> @{user.username}
+						</p>
+					</Link>
 
 					{loggedIn && <FollowButton user={user} />}
-				</>
+				</div>
 			))}
 
 			{hasMore && status === Status.SUCCESS && (
-				<div ref={setObserverTarget as LegacyRef<HTMLDivElement>}></div>
+				<div ref={setObserverTarget}></div>
 			)}
 
-			{status === Status.SUCCESS && !hasMore && (
-				<div>No {users.length > 0 && 'more'} users</div>
+			{users.length === 0 && status === Status.SUCCESS && (
+				<EmptyCard emoji='🤷‍♂️' border={false} gradient={false}>
+					No users found
+				</EmptyCard>
 			)}
 
-			{status === Status.LOADING && <div>Loading...</div>}
+			{status === Status.LOADING && <Loader />}
 
-			{status === Status.ERROR && <div>{error as string}</div>}
+			{status === Status.ERROR && (
+				<EmptyCard emoji='😢' border={false} gradient={false}>
+					{error as string}
+				</EmptyCard>
+			)}
 		</>
 	);
 };

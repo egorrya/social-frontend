@@ -12,6 +12,7 @@ export interface fetchPostsOptions {
 	page?: number;
 
 	clearPosts?: boolean;
+	before: string;
 }
 
 export const PostsApi = {
@@ -27,14 +28,41 @@ export const PostsApi = {
 		return data;
 	},
 
-	async createPost(text: string) {
-		const { data } = await axios.post('/posts', { text });
+	async createPost(text: string, image: File | null = null) {
+		const formData = new FormData();
+
+		if (image) formData.append('image', image);
+		formData.append('text', text);
+
+		const { data } = await axios.post('/posts', formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+		});
 
 		return data;
 	},
 
-	async editPost(text: string, postId: string) {
-		const { data } = await axios.patch(`/posts/${postId}`, { text });
+	async editPost(
+		postId: string,
+		text: string,
+		imageUrl: string | undefined,
+		image: File | null = null
+	) {
+		const formData = new FormData();
+
+		if (imageUrl) {
+			formData.append('imageUrl', imageUrl);
+		} else if (image) {
+			formData.append('image', image);
+		}
+		formData.append('text', text);
+
+		const { data } = await axios.patch(`/posts/${postId}`, formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+		});
 
 		return data;
 	},

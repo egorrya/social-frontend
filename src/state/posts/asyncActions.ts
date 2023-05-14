@@ -48,11 +48,15 @@ export const createPost = createAsyncThunk(
 export const editPost = createAsyncThunk(
 	'postEdit',
 	async (
-		{ text, postId }: { text: string; postId: string },
+		{
+			text,
+			postId,
+			imageSrc,
+		}: { text: string; postId: string; imageSrc?: string },
 		{ rejectWithValue }
 	) => {
 		try {
-			const { data } = await PostsApi.editPost(text, postId);
+			const { data } = await PostsApi.editPost(text, postId, imageSrc);
 
 			return data;
 		} catch (error: any) {

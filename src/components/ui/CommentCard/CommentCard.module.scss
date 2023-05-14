@@ -1,0 +1,69 @@
+@import '../../../styles/variables';
+
+.card {
+	background-color: #fff;
+	// border-radius: $border-radius;
+	// box-shadow: $box-shadow;
+	margin: 0 auto;
+	// margin-bottom: $margin-card-bottom;
+	padding: 2rem 3rem 0rem;
+	border-bottom: 1px solid #e0e0e0;
+
+	width: 100%;
+
+	overflow: hidden;
+
+	&:last-child {
+		margin-bottom: 2rem;
+		border-bottom: none;
+	}
+
+	&__header,
+	&__body {
+		text-decoration: none;
+		color: $color-black;
+	}
+
+	&__header {
+		display: flex;
+		align-items: center;
+		margin-bottom: 0.5rem;
+	}
+
+	&__body {
+		display: inline-block;
+		margin-top: 0.5rem;
+		margin-bottom: 1rem;
+	}
+
+	&__avatar {
+		width: 4rem;
+		height: 4rem;
+		border-radius: 50%;
+		background: linear-gradient(90deg, #3f51b5, transparent) #2196f3;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: #fff;
+	}
+
+	&__info {
+		display: flex;
+		flex-direction: column;
+
+		margin-top: 0.2rem;
+		margin-left: 1rem;
+
+		& p:nth-child(1) {
+			font-size: 1.6rem;
+			line-height: 1.8rem;
+			font-weight: 600;
+		}
+
+		& p:nth-child(2) {
+			font-size: 1.1rem;
+			margin-left: 0.1rem;
+		}
+	}
+}

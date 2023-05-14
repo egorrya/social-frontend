@@ -1,5 +1,6 @@
 @import 'mixins';
 @import 'fonts';
+@import 'variables';
 
 *,
 *::after,
@@ -16,8 +17,6 @@ body {
 }
 
 html {
-	scroll-behavior: smooth;
-
 	font-size: 62.5%; // 1rem = 10px
 
 	@include respond(tab-land) {
@@ -42,6 +41,8 @@ body {
 	font-family: 'Montserrat', sans-serif;
 	font-size: 1.5rem;
 	line-height: 1.6;
+	hyphens: auto;
+	background: $color-white-dark;
 }
 
 h1,
@@ -81,4 +82,15 @@ h5 {
 h6 {
 	font-size: 1.6rem;
 	font-weight: 600;
+}
+
+.fixed-wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	// left: 50%;
+	// transform: translateX(-50%);
+
+	width: 100%;
+	z-index: 100;
 }

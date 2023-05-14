@@ -24,6 +24,15 @@ const postEditSlice = createSlice({
 				state.post.commentsCount += 1;
 			}
 		},
+
+		editSinglePost: (state, action) => {
+			if (state.post) {
+				state.post = {
+					...action.payload,
+					commentsCount: state.post.commentsCount,
+				};
+			}
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -43,5 +52,6 @@ const postEditSlice = createSlice({
 	},
 });
 
-export const { addCommentCountToSinglePost } = postEditSlice.actions;
+export const { addCommentCountToSinglePost, editSinglePost } =
+	postEditSlice.actions;
 export default postEditSlice.reducer;

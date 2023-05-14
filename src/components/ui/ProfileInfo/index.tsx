@@ -1,9 +1,13 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { RootState } from '../../../state/store';
 import { Status } from '../../../types/fetchStatus';
-import FollowButton from '../FollowButton';
+import FollowButton from '../Buttons/FollowButton';
+import EmptyCard from '../EmptyCard';
+import UserAvatar from '../UserAvatar';
+
+import styles from './ProfileInfo.module.scss';
 
 const ProfileInfo: FC = () => {
 	const { user: authUser } = useSelector((state: RootState) => state.auth);
@@ -12,14 +16,31 @@ const ProfileInfo: FC = () => {
 	return (
 		<div>
 			{status === Status.SUCCESS && user && (
-				<div>
-					<h1>{user.username}</h1>
-					<Link to={`/${user.username}/followers`}>
-						{user.followers.length} Followers
-					</Link>
-					<Link to={`/${user.username}/following`}>
-						{user.following.length} Following
-					</Link>
+				<div className={styles.profileInfo}>
+					<UserAvatar
+						size='medium'
+						username={user.username}
+						imageSrc={user.avatar}
+					/>
+
+					<div className={styles.profileInfo__username}>
+						{user.fullName && <span>{user.fullName}</span>}
+						<span
+							className={
+								user.fullName && styles.profileInfo__username__withFullName
+							}
+						>
+							@{user.username}
+						</span>
+					</div>
+					<div className={styles.profileInfo__followLists}>
+						<Link to={`/${user.username}/followers`}>
+							{user.followers.length} Followers
+						</Link>
+						<Link to={`/${user.username}/following`}>
+							{user.following.length} Following
+						</Link>
+					</div>
 
 					{authUser && authUser.username !== user.username && (
 						<FollowButton user={user} />
@@ -27,19 +48,13 @@ const ProfileInfo: FC = () => {
 				</div>
 			)}
 
-			{status === 'error' && (
-				<div>
-					<h1>Failed to load user</h1>
-				</div>
-			)}
-
-			{status === 'loading' && (
-				<div>
-					<h1>Loading...</h1>
-				</div>
+			{status === Status.ERROR && (
+				<EmptyCard emoji='😢' border={false} gradient={false}>
+					Could not load user
+				</EmptyCard>
 			)}
 		</div>
 	);
 };
 
-export default ProfileInfo;
+export default memo(ProfileInfo);

@@ -1,0 +1,24 @@
+@import '../../../../styles/variables';
+
+.popup {
+	position: fixed;
+	bottom: 2rem;
+	left: 50%;
+	transform: translateX(-50%);
+	box-shadow: $box-shadow;
+	background-color: $color-white;
+
+	padding: 1rem 1.5rem 1rem 1.25rem;
+	border-radius: $border-radius-small;
+	z-index: 9999;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	svg {
+		margin-right: 0.5rem;
+		width: 2rem;
+		height: 2rem;
+	}
+}

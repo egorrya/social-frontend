@@ -1,0 +1,58 @@
+@import '../../../../styles/variables';
+
+$red: #cc5859;
+$bezier: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+.commentButton {
+	// border: 1.1px solid $color-black;
+	border-radius: 40px;
+
+	padding-left: 1.3rem;
+	padding-right: 1rem;
+
+	height: 3rem;
+	width: max-content;
+
+	text-decoration: none;
+
+	display: flex;
+	align-items: center;
+	justify-content: start;
+
+	font-size: 1.4rem;
+
+	filter: grayscale(100%);
+	user-select: none;
+	cursor: pointer;
+
+	transition: all 0.25s $bezier, background 0.5s ease-in-out;
+
+	background: linear-gradient(#eee, #ffbebe);
+	background-size: 1px 70px;
+
+	&:hover {
+		background-position: 70px;
+
+		.commentIcon {
+			transform: scale(1.1);
+		}
+	}
+}
+
+.commentCount {
+	min-width: 1rem;
+	text-align: center;
+}
+
+.commentIcon {
+	width: 18px;
+	height: 16px;
+	display: inline-block;
+	position: relative;
+	margin-right: 0.25em;
+	font-size: 1.5rem;
+	background: url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjU2IDMyQzExNC42IDMyIDAgMTI1LjEgMCAyNDBjMCA0OS42IDIxLjQgOTUgNTcgMTMwLjdDNDQuNSA0MjEuMSAyLjcgNDY2IDIuMiA0NjYuNWMtMi4yIDIuMy0yLjggNS43LTEuNSA4LjdTNC44IDQ4MCA4IDQ4MGM2Ni4zIDAgMTE2LTMxLjggMTQwLjYtNTEuNCAzMi43IDEyLjMgNjkgMTkuNCAxMDcuNCAxOS40IDE0MS40IDAgMjU2LTkzLjEgMjU2LTIwOFMzOTcuNCAzMiAyNTYgMzJ6IiBmaWxsPSIjMjIyMjIyIiBjbGFzcz0iZmlsbC0wMDAwMDAiPjwvcGF0aD48L3N2Zz4=')
+		no-repeat center;
+
+	background-size: 100%;
+}

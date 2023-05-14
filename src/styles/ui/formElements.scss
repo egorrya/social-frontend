@@ -1,0 +1,53 @@
+@import '../variables';
+
+.input {
+	input {
+		font-family: inherit;
+		border: 1px solid #ccc;
+		border-radius: $border-radius-small;
+		padding: 1rem;
+		width: 100%;
+		margin-bottom: 1rem;
+
+		&:focus {
+			outline: none;
+			border-color: #000;
+		}
+	}
+
+	&__error {
+		input {
+			border-color: #ffbbbb;
+			border-bottom: 0;
+			border-bottom-right-radius: 0;
+			border-bottom-left-radius: 0;
+
+			margin-bottom: 0;
+
+			&:focus {
+				outline: none;
+				border-color: #ffbbbb;
+			}
+		}
+	}
+
+	&__error-message {
+		border: 1px solid #ffbbbb;
+		font-size: 1.2rem;
+		padding: 0.4rem 1rem;
+
+		border-radius: 0 0 $border-radius-small $border-radius-small;
+		background: linear-gradient(125deg, #ffeeee, #ffcccc);
+		margin-bottom: 1rem;
+	}
+}
+
+.error-message {
+	border-radius: $border-radius-small;
+	border: 1px solid #ffbbbb;
+	background: linear-gradient(125deg, #ffeeee, #ffcccc);
+
+	font-size: 1.2rem;
+	padding: 1rem;
+	margin-bottom: 1rem;
+}

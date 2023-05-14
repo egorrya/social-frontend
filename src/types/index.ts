@@ -8,4 +8,19 @@ export interface User {
 	createdAt: Date;
 	updatedAt: Date;
 	__v: number;
+	avatar?: string;
 }
+
+export interface Comment {
+	_id: string;
+	text: string;
+	user: {
+		_id: string;
+		username: string;
+		avatar?: string;
+		fullName?: string;
+	};
+	createdAt: string;
+}
+
+export type homeFilterType = 'all' | 'popular' | 'feed';

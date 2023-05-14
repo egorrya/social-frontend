@@ -1,0 +1,43 @@
+@import '../../../../styles/variables';
+
+.backToTop {
+	position: fixed;
+	display: block;
+	width: 5rem;
+	height: 5rem;
+	bottom: 2rem;
+	right: 2rem;
+	background-color: $color-white;
+	color: $color-black;
+	font-size: 2rem;
+	padding: 1.5rem;
+	border: none;
+	cursor: pointer;
+	border-radius: 50px;
+	box-shadow: $box-shadow;
+	opacity: 0;
+	visibility: hidden;
+
+	transition: all 0.4s ease-in-out;
+
+	svg {
+		fill: $color-black;
+		width: 100%;
+		height: 100%;
+	}
+
+	&.visible {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	&:hover {
+		background-color: $color-black;
+		color: $color-white;
+		box-shadow: $box-shadow-focus;
+
+		svg {
+			fill: $color-white;
+		}
+	}
+}

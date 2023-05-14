@@ -37,7 +37,7 @@ const usersSlice = createSlice({
 		clearUsers: (state) => {
 			state.users = [];
 			state.error = null;
-			state.lastPage = 1;
+			state.lastPage = null;
 			state.status = Status.NEVER;
 			state.currentPage = 1;
 		},

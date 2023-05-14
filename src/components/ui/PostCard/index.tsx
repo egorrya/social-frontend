@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { PostsApi } from '../../../services/api/PostsApi';
@@ -6,12 +6,16 @@ import { changeEditableId } from '../../../state/posts/postEditSlice';
 import { deletePost } from '../../../state/posts/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
 
-import PostForm from '../PostForm';
+import PostForm from '../../screens/Forms/PostForm';
 import { PostCardProps } from './types';
 
+import { openPopup } from '../../../state/notificationPopup/slice';
 import dateChanger from '../../../utils/dateChanger';
-import Button from '../Button';
-import LikeButton from '../LikeButton';
+import Button from '../Buttons/Button';
+import CommentButton from '../Buttons/CommentButton';
+import LikeButton from '../Buttons/LikeButton';
+import LazyImage from '../LazyImage';
+import UserAvatar from '../UserAvatar';
 import styles from './PostCard.module.scss';
 
 const PostCard: FC<PostCardProps> = ({ postData, isSinglePostPage }) => {
@@ -32,12 +36,24 @@ const PostCard: FC<PostCardProps> = ({ postData, isSinglePostPage }) => {
 
 		if (!shouldDelete) return;
 
-		PostsApi.deletePost(postData._id).then(() => {
-			if (isSinglePostPage) window.location.href = '/';
-			if (!isSinglePostPage) dispatch(deletePost(postData._id));
-		});
-		// TODO: add success notification
-		// TODO: add error notification
+		PostsApi.deletePost(postData._id)
+			.then(() => {
+				if (isSinglePostPage) window.history.back();
+
+				if (!isSinglePostPage) dispatch(deletePost(postData._id));
+
+				dispatch(
+					openPopup({
+						message: 'Post deleted successfully',
+						status: 'success',
+					})
+				);
+			})
+			.catch(() => {
+				dispatch(
+					openPopup({ message: 'Something went wrong', status: 'error' })
+				);
+			});
 	};
 
 	const handleEdit = () => {
@@ -46,46 +62,65 @@ const PostCard: FC<PostCardProps> = ({ postData, isSinglePostPage }) => {
 
 	if (editableId && editableId === postData._id)
 		return (
-			<>
-				<PostForm type='edit' textareaValue={postData.text} />
-				<button onClick={() => dispatch(changeEditableId(null))}>Cancel</button>
-			</>
+			<div style={{ marginBottom: '1rem' }}>
+				<PostForm
+					type='edit'
+					textareaValue={postData.text}
+					imageUrlValue={postData.imageUrl}
+					isSinglePostPage={isSinglePostPage}
+				/>
+				<Button onClick={() => dispatch(changeEditableId(null))}>Cancel</Button>
+			</div>
 		);
 
 	return (
 		<>
 			<div className={styles.card}>
 				<Link className={styles.card__header} to={`/${postData.user.username}`}>
-					<div className={styles.card__avatar}>
-						{postData.user.username.split('')[0]}
-					</div>
+					<UserAvatar
+						size='small'
+						username={postData.user.username}
+						imageSrc={postData.user.avatar}
+					/>
 					<div className={styles.card__info}>
-						<p>{postData.user.username}</p>
+						<p>
+							{postData.user.fullName
+								? postData.user.fullName
+								: `@${postData.user.username}`}
+						</p>
 						<p>{dateChanger(postData.createdAt)}</p>
 					</div>
 				</Link>
 
-				{!isSinglePostPage ? (
-					<Link className={styles.card__body} to={`/posts/${postData._id}`}>
+				{postData.text && (
+					<Link className={styles.card__text} to={`/posts/${postData._id}`}>
 						<p>{postData.text}</p>
 					</Link>
-				) : (
-					<div className={styles.card__body}>
-						<p>{postData.text}</p>
-					</div>
 				)}
 
-				<LikeButton postId={postData._id} likes={postData.post_likes} />
+				{postData.imageUrl && (
+					<Link className={styles.card__image} to={`/posts/${postData._id}`}>
+						<LazyImage src={postData.imageUrl} alt='Post image' />
+					</Link>
+				)}
+
+				<div className={styles.card__buttons}>
+					<LikeButton postId={postData._id} likes={postData.post_likes} />
+					<CommentButton
+						postId={postData._id}
+						commentsCount={postData.commentsCount}
+					/>
+				</div>
 			</div>
 
 			{isOwnPost && (
 				<div style={{ marginBottom: '1rem' }}>
-					<Button onClick={handleDelete} text='Delete' />
-					<Button onClick={handleEdit} text='Edit' />
+					<Button onClick={handleDelete}>Delete</Button>
+					<Button onClick={handleEdit}>Edit</Button>
 				</div>
 			)}
 		</>
 	);
 };
 
-export default memo(PostCard);
+export default PostCard;

@@ -1,0 +1,48 @@
+@import '../../../styles/variables';
+
+.filter {
+	position: absolute;
+	display: flex;
+	justify-content: space-between;
+	background: $color-black-light;
+	border-radius: $border-radius;
+	box-shadow: $box-shadow;
+
+	max-width: 66rem;
+	width: 100%;
+	padding: 0.1rem;
+
+	left: 50%;
+	transform: translateX(-50%);
+
+	&.sticky {
+		top: 2rem;
+
+		width: calc(100% - 4rem);
+
+		@media screen and (min-width: 768px) {
+			top: 4rem;
+		}
+	}
+
+	li {
+		list-style: none;
+		cursor: pointer;
+		width: 100%;
+		text-align: center;
+		color: $color-white;
+		padding: 0.8rem;
+		border-radius: $border-radius - 1px;
+		transition: all 0.2s ease-in-out;
+		text-transform: capitalize;
+
+		&.active {
+			background-color: $color-white;
+			color: $color-black;
+		}
+	}
+}
+
+.wrapper {
+	height: 5.3rem;
+}

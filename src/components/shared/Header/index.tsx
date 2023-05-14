@@ -1,21 +1,26 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logOut } from '../../../state/auth/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
-import { Status } from '../../../types/fetchStatus';
-import LogInModal from '../../screens/LogInModal';
-import SignInModal from '../../screens/RegisterModal';
-import Button from '../../ui/Button';
+import LogInModal from '../../screens/Modals/LogInModal';
+import Button from '../../ui/Buttons/Button';
 
+import RegisterModal from '../../screens/Modals/RegisterModal';
 import styles from './Header.module.scss';
 
 const Header: FC = () => {
 	const dispatch = useAppDispatch();
 
+	const [initialLoad, setInitialLoad] = useState<boolean>(true);
+
 	const { loggedIn, user, status } = useSelector(
 		(state: RootState) => state.auth
 	);
+
+	useEffect(() => {
+		if (initialLoad) setInitialLoad(false);
+	}, [initialLoad]);
 
 	const handleLogout = () => {
 		localStorage.removeItem('token');
@@ -23,25 +28,22 @@ const Header: FC = () => {
 	};
 
 	const authSectionButtons = () => {
-		if (status === Status.LOADING) return <div>Loading...</div>;
+		if (!loggedIn)
+			return (
+				<div className={styles.modalButtons}>
+					<LogInModal />
+					<RegisterModal />
+				</div>
+			);
 
 		if (loggedIn)
 			return (
-				<>
+				<div>
 					<Link className={styles.profileName} to={`/${user?.username}`}>
 						{user?.username}
 					</Link>
-					<Button onClick={handleLogout} text='Logout' />
-				</>
-			);
-
-		if (!loggedIn)
-			return (
-				<>
-					<LogInModal />
-					<SignInModal />
-					{status === Status.ERROR && <div>Error</div>}
-				</>
+					<Button onClick={handleLogout}>Logout</Button>
+				</div>
 			);
 	};
 
@@ -50,7 +52,7 @@ const Header: FC = () => {
 			<Link className={styles.header__logo} to={'/'}>
 				Nottwitter
 			</Link>
-			<div>{authSectionButtons()}</div>
+			{authSectionButtons()}
 		</header>
 	);
 };

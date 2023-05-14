@@ -19,12 +19,28 @@ const singleUserSlice = createSlice({
 	name: 'singleUser',
 	initialState,
 	reducers: {
-		initializeUser(state, action) {
+		initializeUser: (state, action) => {
 			state.user = action.payload;
 			state.status = Status.SUCCESS;
 			state.error = null;
 		},
+
+		toggleFollowForSingleUser: (state, action) => {
+			if (state.user) {
+				const id = action.payload;
+				const isFollowed = state.user.followers.includes(id);
+
+				if (isFollowed) {
+					state.user.followers = state.user.followers.filter(
+						(follower) => follower !== id
+					);
+				} else {
+					state.user.followers = [...state.user.followers, id];
+				}
+			}
+		},
 	},
+
 	extraReducers: (builder) => {
 		builder
 			.addCase(getUser.pending, (state) => {
@@ -43,5 +59,6 @@ const singleUserSlice = createSlice({
 	},
 });
 
-export const { initializeUser } = singleUserSlice.actions;
+export const { initializeUser, toggleFollowForSingleUser } =
+	singleUserSlice.actions;
 export default singleUserSlice.reducer;
