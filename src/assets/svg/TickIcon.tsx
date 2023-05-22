@@ -6,7 +6,7 @@ const TickIcon: FC<IconProps> = ({ className, onClick, color = '#222222' }) => {
 		<svg
 			className={className}
 			onClick={onClick}
-			enable-background='new 0 0 128 128'
+			enableBackground='new 0 0 128 128'
 			height='16'
 			id='Layer_1'
 			version='1.1'

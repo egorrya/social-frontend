@@ -24,6 +24,7 @@ const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
 	const dispatch = useAppDispatch();
 
 	const [before, setBefore] = useState<string>('');
+	const [fetchNeeded, setFetchNeeded] = useState(false);
 
 	const { posts, status, lastPage, currentPage, activeFilter, deleted } =
 		useSelector((state: RootState) => state.posts);
@@ -48,7 +49,7 @@ const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
 
 	useEffect(() => {
 		setBefore(new Date().toISOString());
-	}, [setBefore]);
+	}, [filter]);
 
 	useEffect(() => {
 		if (
@@ -57,41 +58,47 @@ const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
 			page > currentPage &&
 			page > 1
 		) {
-			handleDispatch(page);
-		}
-	}, [page, hasMore, status, handleDispatch, currentPage]);
-
-	useEffect(() => {
-		if (
+			setFetchNeeded(true);
+		} else if (
 			deleted &&
 			deleted % POSTS_PER_PAGE === 1 &&
 			lastPage &&
 			lastPage > currentPage
 		) {
-			handleDispatch(page);
-		}
-	}, [currentPage, deleted, lastPage, page, handleDispatch]);
-
-	useEffect(() => {
-		if (
+			setFetchNeeded(true);
+		} else if (
 			before &&
 			((!activeFilter && posts.length === 0) ||
 				activeFilter !== activeFilterString)
 		) {
-			dispatch(clearPosts());
-			handleDispatch(1, true);
-
-			setPage(1);
+			if (activeFilter !== activeFilterString) {
+				dispatch(clearPosts());
+				setPage(1);
+			}
+			setFetchNeeded(true);
+		} else {
+			setFetchNeeded(false);
 		}
 	}, [
+		page,
+		hasMore,
+		status,
+		currentPage,
+		deleted,
+		lastPage,
+		before,
 		activeFilter,
 		activeFilterString,
-		before,
 		posts.length,
-		handleDispatch,
 		setPage,
 		dispatch,
 	]);
+
+	useEffect(() => {
+		if (fetchNeeded) {
+			handleDispatch(page);
+		}
+	}, [fetchNeeded, handleDispatch, page]);
 
 	return (
 		<>
@@ -102,7 +109,7 @@ const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
 			</div>
 
 			{hasMore && status === Status.SUCCESS && (
-				<div ref={setObserverTarget}>Load More</div>
+				<div ref={setObserverTarget}></div>
 			)}
 
 			{!hasMore && status === Status.SUCCESS && (
