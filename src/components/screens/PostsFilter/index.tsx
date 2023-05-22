@@ -24,10 +24,10 @@ const PostsFilter: FC = () => {
 			const header = document.querySelector('header');
 
 			if (
-				filterWrapperRef.current?.offsetTop &&
+				filterWrapperRef.current &&
 				header &&
-				window.pageYOffset >
-					filterWrapperRef.current.offsetTop + header.clientHeight
+				filterWrapperRef.current.offsetTop + header.clientHeight <
+					window.scrollY
 			) {
 				setSticky(true);
 			} else {
@@ -36,6 +36,7 @@ const PostsFilter: FC = () => {
 		};
 
 		window.addEventListener('scroll', handleScroll);
+
 		return () => {
 			window.removeEventListener('scroll', handleScroll);
 		};

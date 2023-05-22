@@ -6,6 +6,7 @@ import { RootState, useAppDispatch } from '../../../state/store';
 import LogInModal from '../../screens/Modals/LogInModal';
 import Button from '../../ui/Buttons/Button';
 
+import { setActiveHomeFilter } from '../../../state/filters/slice';
 import RegisterModal from '../../screens/Modals/RegisterModal';
 import styles from './Header.module.scss';
 
@@ -14,9 +15,7 @@ const Header: FC = () => {
 
 	const [initialLoad, setInitialLoad] = useState<boolean>(true);
 
-	const { loggedIn, user, status } = useSelector(
-		(state: RootState) => state.auth
-	);
+	const { loggedIn, user } = useSelector((state: RootState) => state.auth);
 
 	useEffect(() => {
 		if (initialLoad) setInitialLoad(false);
@@ -49,7 +48,12 @@ const Header: FC = () => {
 
 	return (
 		<header className={styles.header}>
-			<Link className={styles.header__logo} to={'/'}>
+			{' '}
+			<Link
+				className={styles.header__logo}
+				to={'/'}
+				onClick={() => dispatch(setActiveHomeFilter('all'))}
+			>
 				Nottwitter
 			</Link>
 			{authSectionButtons()}
