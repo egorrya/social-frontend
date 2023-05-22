@@ -48,7 +48,6 @@ const Header: FC = () => {
 
 	return (
 		<header className={styles.header}>
-			{' '}
 			<Link
 				className={styles.header__logo}
 				to={'/'}
