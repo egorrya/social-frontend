@@ -80,6 +80,7 @@ const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
 		) {
 			dispatch(clearPosts());
 			handleDispatch(1, true);
+			setBefore(new Date().toISOString());
 
 			setPage(1);
 		}
