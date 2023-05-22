@@ -75,6 +75,7 @@ const PostForm: FC<PostFormProps> = ({
 
 	const inputId = uuidv4();
 
+	const { activeHomeFilter } = useSelector((state: RootState) => state.filters);
 	const { editableId } = useSelector((state: RootState) => state.postEdit);
 
 	const [status, setStatus] = useState<Status>(Status.NEVER);
@@ -119,7 +120,7 @@ const PostForm: FC<PostFormProps> = ({
 		PostsApi.createPost(data.text, image)
 			.then((res) => {
 				setStatus(Status.SUCCESS);
-				dispatch(addNewPost(res.data));
+				if (activeHomeFilter !== 'popular') dispatch(addNewPost(res.data));
 				dispatch(openPopup({ message: 'Post created!', status: 'success' }));
 
 				reset();
