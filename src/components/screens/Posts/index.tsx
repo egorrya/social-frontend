@@ -4,7 +4,6 @@ import { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 import { getPosts } from '../../../state/posts/asyncActions';
-import { clearPosts } from '../../../state/posts/slice';
 import { RootState, useAppDispatch } from '../../../state/store';
 
 import { useInfiniteScroll } from '../../../hooks/useInfiniteScroll';
@@ -25,6 +24,7 @@ const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
 
 	const [before, setBefore] = useState<string>('');
 	const [fetchNeeded, setFetchNeeded] = useState(false);
+	const [clearPosts, setClearPosts] = useState(false);
 
 	const { posts, status, lastPage, currentPage, activeFilter, deleted } =
 		useSelector((state: RootState) => state.posts);
@@ -72,7 +72,8 @@ const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
 				activeFilter !== activeFilterString)
 		) {
 			if (activeFilter !== activeFilterString) {
-				dispatch(clearPosts());
+				// dispatch(clearPosts());
+				setClearPosts(true);
 				setPage(1);
 			}
 			setFetchNeeded(true);
@@ -96,9 +97,15 @@ const Posts: FC<PostsProps | UserPostsState> = ({ filter, username }) => {
 
 	useEffect(() => {
 		if (fetchNeeded) {
-			handleDispatch(page);
+			if (!clearPosts) handleDispatch(page);
+			if (clearPosts) {
+				handleDispatch(page, clearPosts);
+				setClearPosts(false);
+			}
 		}
-	}, [fetchNeeded, handleDispatch, page]);
+	}, [clearPosts, fetchNeeded, handleDispatch, page]);
+
+	if (clearPosts && status === Status.LOADING) return <Loader />;
 
 	return (
 		<>
