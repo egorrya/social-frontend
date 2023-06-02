@@ -1,7 +1,5 @@
 # nottwitter 🐦
 
-![NotTwitter-logo](NotTwitterLogo.png)
-
 Welcome to NotTwitter! This is a social media platform that mirrors Twitter, but remember, it's not Twitter. Engage with a world of thoughts, ideas and perspectives. 🌍💡
 
 Check out the live application [here](https://social-frontend-rose.vercel.app/). 🔗
